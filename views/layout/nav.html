@@ -13,8 +13,8 @@
 
         <ul class="list-unstyled topbar-menu float-end mb-0">
 
-            <li v-on:click="next()" class="notification-list">
-                <a class="nav-link dropdown-toggle arrow-none nav-item" href="javascript:;">
+            <li class="notification-list">
+                <a data-bs-toggle="modal" data-bs-target="#update-info" class="nav-link dropdown-toggle arrow-none nav-item" href="javascript:;">
                     <!-- 图标 -->
                     <div id="lottie-beil" class="wh-32px svg-info"></div>
                     <!-- 点点 -->
@@ -124,7 +124,7 @@
     </div>
 
     <teleport to="body">
-    <!--- 模态框 - 开始 -->
+    <!-- 模态框 - 登录 - 开始 -->
     <div id="login-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-header bg-info">
@@ -161,6 +161,43 @@
             </div>
         </div>
     </div>
-    <!--- 模态框 - 结束 -->
+    <!-- 模态框 - 登录 - 结束 -->
+    <!-- 模态框 - 更新 - 开始 -->
+    <div id="update-info" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="primary-header-modalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header modal-colored-header bg-info">
+                    <h4 class="modal-title" id="primary-header-modalLabel">[ inis 主题 ] - 版本更新</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="flex-center font-20px">
+                            <svg t="1626366975999" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4254" width="40" height="40"><path d="M512 204.8c168.96 0 307.2 138.24 307.2 307.2s-138.24 307.2-307.2 307.2-307.2-138.24-307.2-307.2 138.24-307.2 307.2-307.2m0-51.2c-197.12 0-358.4 161.28-358.4 358.4s161.28 358.4 358.4 358.4 358.4-161.28 358.4-358.4-161.28-358.4-358.4-358.4z" p-id="4255" fill="#f39b12"></path><path d="M550.4 368.64m-38.4 0a38.4 38.4 0 1 0 76.8 0 38.4 38.4 0 1 0-76.8 0Z" p-id="4256" fill="#f39b12"></path><path d="M486.4 716.8c-7.68 0-15.36-2.56-20.48-7.68-5.12-5.12-7.68-15.36-5.12-23.04l38.4-179.2c-10.24 7.68-23.04 5.12-30.72-2.56-10.24-10.24-12.8-25.6-2.56-35.84 30.72-33.28 66.56-35.84 71.68-33.28 7.68 0 15.36 5.12 20.48 10.24 5.12 5.12 7.68 12.8 5.12 20.48l-38.4 179.2c7.68-5.12 20.48-5.12 28.16 0 12.8 7.68 15.36 23.04 7.68 35.84-25.6 30.72-66.56 35.84-74.24 35.84z" p-id="4257" fill="#f39b12"></path></svg>
+                            <span class="ml-1">有新的版本更新，是否更新？</span>
+                        </div>
+                        <div class="row">
+                            <div class="alert alert-light fade show w-100 mt-2" role="alert">
+                                <p class="pb-3">
+                                <span class="float-left">
+                                    <strong>最新版本：</strong><span class="text-success">{{updateInfo.version_title}} - {{updateInfo.version}}</span>
+                                </span>
+                                    <span class="float-right">
+                                    <strong>更新时间：</strong><span class="text-success">{{updateInfo.last_update_time}}</span>
+                                </span>
+                                </p>
+                                <p v-html="updateInfo.version_content" class="pre-line"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">取消</button>
+                    <button v-on:click="toUrl(updateInfo.update_url)" type="button" class="btn btn-info">前往更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框 - 更新 - 结束 -->
     </teleport>
 </div>

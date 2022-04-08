@@ -317,11 +317,12 @@
                     isLogin: false,
                     info: {},
                 },
+                updateInfo: {},
             }
         },
         mounted() {
             this.update()
-            this.email()
+            this.lottieEmail()
             this.initSearch()
         },
         methods: {
@@ -437,7 +438,21 @@
                 }, 500)
                 Notify('退出登录成功', 'success')
             },
+            // 检查更新
             update(){
+                inisHelper.fetch.get('https://inis.cc/api/theme',{
+                    id: 6
+                }).then(res=>{
+                    if (res.code == 200) {
+                        this.updateInfo = res.data.opt
+                        this.updateInfo.last_update_time = inisHelper.time.nature(res.data.last_update_time)
+                        if (inisHelper.compare.version(this.updateInfo.version, INIS.version)) {
+                            this.lottieUpdate()
+                        }
+                    }
+                })
+            },
+            lottieUpdate(){
                 inisHelper.fetch.get('/assets/libs/lottie/json/beil.json').then(res=>{
                     // 先删除动态图标
                     document.querySelector('#lottie-beil').innerHTML = ''
@@ -445,7 +460,7 @@
                     lottie.loadAnimation({container:document.getElementById("lottie-beil"),renderer:"svg",loop:true,autoplay:true,animationData:res})
                 })
             },
-            email(){
+            lottieEmail(){
                 inisHelper.fetch.get('/assets/libs/lottie/json/mail.json').then(res=>{
                     // 先删除动态图标
                     document.querySelector('#lottie-email').innerHTML = ''
@@ -458,6 +473,8 @@
                 const value = inisHelper.is.empty(this.searchValue) ? this.search.placeholder : this.searchValue
                 window.location.href = '/search?value=' + value
             },
+            // 链接跳转
+            toUrl: (url) => window.open(url),
             // 是否为空
             empty: (data) => inisHelper.is.empty(data)
         },

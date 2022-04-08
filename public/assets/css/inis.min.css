@@ -12,6 +12,10 @@
     --inis-main: 255, 255, 255
 }
 
+[v-cloak]{
+    display: none;
+}
+
 ::selection{color:#4988fd;background: #727cf512;}
 ::-moz-selection{color:#4988fd;background: #727cf512;}
 
@@ -477,6 +481,7 @@ code ::selection{background:rgba(52,68,73,var(--inis-opacity));color:#fff;text-s
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
 }
+.pre-line{display: inline-flex;white-space: pre-line;}
 
 .btn-info {
     color: #fff;
