@@ -1,0 +1,88 @@
+{
+    "basic": {
+        "site": {
+            "title"       :  "",
+            "keywords"    :  "inis,inis api",
+            "favicon"     :  "/assets/favicon.ico",
+            "nickname"    :  "",
+            "description" :  "",
+            "head_img"    :  "https://q.qlogo.cn/g?b=qq&nk=97783391&s=640",
+            "present"     :  "",
+            "copy"		  :	 {
+                "code":"备案码",
+                "url" :"https://beian.miit.gov.cn"
+            }
+        },
+        "style": {
+            "color":{
+                "nav":"#FFFFFF",
+                "left":"#FFFFFF",
+                "main":"#FFFFFF",
+                "background":"#FAFBFE"
+            },
+            "opacity":0.9,
+            "background":{
+                "static":"",
+                "dynamic":0
+            },
+            "font":{
+                "color":"#6c757d",
+                "size":"0.9em"
+            },
+            "radius":"0.25em"
+        }
+    },
+    "other": {
+        "module":{
+            "banner"	  :  true,
+            "article_copy":  true,
+            "music"       :  true,
+            "wecome"      :  true,
+            "login"       :  true,
+            "placard"     :  true
+        },
+        "images":  {
+			"preview_url": "//cdn.inis.cc/comm/assets/images/gif/load.gif",
+			"img_err_url": "//cdn.inis.cc/comm/assets/images/gif/404.gif",
+			"cross_bg"   : "//test.inis.cn/api/file/random",
+            "logo": {
+                "day": {
+                    "big":"/assets/images/logo.png",
+                    "small":"/assets/images/logo_sm.png"
+                },
+                "night":{
+                    "big":"/assets/images/logo_night.png",
+                    "small":"/assets/images/logo_sm.png"
+                }
+            }
+		},
+        "help": {
+            "description" :  "您好！请问有什么可以帮您！",
+            "btn_text"    :  "帮助",
+            "btn_url"     :  "//docs.inis.cc",
+            "img_src"     :  "assets/images/help-icon.svg",
+            "is_show"     :  true
+        },
+        "copy": {
+            "text"        :  "您复制了inis系统的内容\n网址：https://inis.cn"
+        }
+    },
+    "developer": {
+        "code": {
+            "js"          : "",
+            "css"         : "",
+            "html"        : {
+                "head"    : "",
+                "body"    : ""
+            }
+        },
+        "menu": {
+            "one": "[\n    {\n        \"title\":\"inis官网呀\",\n        \"class\":\"mr-2 mdi mdi-star-four-points-outline mdi-spin\",\n        \"svg\":\"\",\n        \"url\":\"https://inis.cc\",\n        \"target\":\"_block\"\n    },\n    {\n        \"title\":\"INIS - 使用文档\",\n        \"class\":\"mr-2 mdi mdi-clipboard-minus-outline\",\n        \"svg\":\"\",\n        \"url\":\"https://docs.inis.cc\",\n        \"target\":\"_block\"\n    }\n]",
+            "two": "[\n    {\n        \"title\":\"菜单一\",\n        \"class\":\"mdi mdi-tag-multiple\",\n        \"svg\":\"\",\n        \"child\":[\n            {\n                \"title\":\"萌卜兔\",\n                \"url\":\"//racns.com\",\n                \"target\":\"_block\"\n            },\n            {\n                \"title\":\"自定义 - 后台修改\",\n                \"url\":\"//inis.cn\",\n                \"target\":\"_block\"\n            }\n        ]\n    },\n    {\n        \"title\":\"菜单二\",\n        \"class\":\"mdi mdi-tag-multiple-outline\",\n        \"svg\":\"\",\n        \"child\":[\n            {\n                \"title\":\"萌卜兔\",\n                \"url\":\"//racns.com\",\n                \"target\":\"_block\"\n            }\n        ]\n    }\n]"
+        },
+        "footer": {
+            "left"        :  "<span class=\"badge item left bg-danger ml-1\">自定义脚</span><span class=\"badge item right bg-success\"><a href=\"//inis.cn\" target=\"_blank\">左边</a></span>",
+            "right"       :  "<span class=\"badge item left bg-info\"><a href=\"//racns.com/inis.html\" target=\"_blank\">自定义脚</a></span><span class=\"badge item right bg-light mr-1\"><a href=\"//inis.cc\" target=\"_blank\">右边</a></span>"
+        }
+    }
+}

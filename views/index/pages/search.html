@@ -1,0 +1,369 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+搜索 [[.value]] - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+[[assets_css "/assets/libs/highlight/index.css"]]
+[[end]]
+
+[[define "script"]]
+[[assets_js "/assets/libs/highlight/index.js"]]
+[[assets_js "/assets/js/pages/index/search.js"]]
+[[end]]
+
+[[define "content"]]
+<div id="search" class="row">
+  <div class="col-lg-8">
+    <!-- 搜索记录 - 开始 -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row px-lg-5 mx-lg-3">
+          <div class="col-4 col-md-3 px-0">
+            <div class="custom-select2">
+              <select id="search-select-sort" class="form-control select2" data-bs-toggle="select2"></select>
+            </div>
+          </div>
+          <div class="col-8 col-md-9 px-0">
+            <div class="input-group">
+              <input v-model="search.value" v-on:keyup.enter="runSearch(true)" type="text" class="form-control custom-input" placeholder="擅用搜索，事半功倍！">
+              <button v-on:click="runSearch(true)" class="btn p-1" type="button">
+                <svg t="1648381817213" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2230" width="24" height="24"><path d="M469.333333 768c-166.4 0-298.666667-132.266667-298.666666-298.666667s132.266667-298.666667 298.666666-298.666666 298.666667 132.266667 298.666667 298.666666-132.266667 298.666667-298.666667 298.666667z m0-85.333333c119.466667 0 213.333333-93.866667 213.333334-213.333334s-93.866667-213.333333-213.333334-213.333333-213.333333 93.866667-213.333333 213.333333 93.866667 213.333333 213.333333 213.333334z m251.733334 0l119.466666 119.466666-59.733333 59.733334-119.466667-119.466667 59.733334-59.733333z" fill="#8a8a8a" p-id="2231"></path></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row px-lg-5 mx-lg-3">
+          <div v-if="!empty(search.cloud)" class="col-12 pl-0">
+            <h4 class="header-title my-2 pl-0">热门搜索</h4>
+            <span v-for="(item, index) in search.cloud" :key="index" v-on:click="runSearch(true,{},item.name)" class="badge custom-badge-secondary-lighten hover-opacity-80 cursor p-1 mr-1 mb-1">
+              <span class="p-1">{{item.name}}</span>
+            </span>
+          </div>
+          <div v-if="!empty(search.local)" class="col-12 pl-0">
+            <h4 class="header-title my-2 pl-0">
+              搜索记录
+              <i v-on:click="clearLocal()" class="float-end mdi mdi-delete-outline cursor font-18"></i>
+            </h4>
+            <span v-for="(item, index) in search.local" :key="index" v-on:click="runSearch(true,{},item)" class="badge custom-badge-secondary-lighten hover-opacity-80 cursor p-1 mr-1 mb-1">
+              <span class="p-1">{{item}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 搜索记录 - 结束 -->
+
+    <!-- 搜索结果 - 开始 -->
+    <div class="card">
+      <ul v-if="search.init" class="card-header nav nav-tabs nav-bordered pb-0">
+        <li class="nav-item">
+          <a href="#search-article" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+            <span>
+                文章
+                <span class="badge text-primary">{{search.result.article.count}}</span>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#search-page" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+            <span>
+                页面
+                <span class="badge text-primary">{{search.result.page.count}}</span>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#search-comments" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+            <span>
+                评论
+                <span class="badge text-primary">{{search.result.comments.count}}</span>
+            </span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#search-links" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+            <span>
+                友链
+                <span class="badge text-primary">{{search.result.links.count}}</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div v-if="!search.init" class="card-body text-center">
+        <img style="width:280px;opacity: .7;" src="/assets/svg/null-search.svg">
+        <p class="text-muted custom-hr mt-5">请输入搜索关键词</p>
+      </div>
+      <div v-else class="card-body py-2 tab-content">
+        <div id="search-article" class="tab-pane show active">
+          <div v-for="(item, index) in search.result.article.data" :key="index" class="row my-2">
+            <div class="col-5 col-md-4">
+              <a :href="'/article/' + item.id + '.html'" class="img-shadow hover-a-img">
+                <img :src="item?.expand?.img_src" class="img-cover w-100 img-h-auto" height="130">
+              </a>
+            </div>
+            <div class="col-7 col-md-8 flex-vertical">
+              <a :href="'/article/' + item.id + '.html'" class="fs-4 text-hover-primary text-muted cursor mb-1 fw-bolder">
+                {{item.title || '文章标题'}}
+              </a>
+              <p class="text-ellipsis font-13 mb-1">{{item.description || '文章描述'}}</p>
+              <p class="mb-1 d-mb-none">
+                <span v-for="(tag, tsgs) in item.expand.tag" :key="tsgs" class="badge custom-badge-secondary-lighten hover-opacity-80 cursor p-1 mr-1 mb-1">
+                    <span class="p-1">{{tag.name}}</span>
+                </span>
+              </p>
+              <p class="mb-1 flex-space-between">
+                <span>
+                  <span class="d-mb-none">
+                      <img :src="item.expand.author.head_img" class="rounded-circle avatar-xs">
+                      {{item.expand.author.nickname}}
+                  </span>
+                  <span class="icon-circle">
+                      {{nature(item.create_time)}}
+                  </span>
+                </span>
+                <span class="float-end flex-center">
+                  <span class="text-muted fs-em-06 flex-center me-1">
+                    <i class="mdi mdi-comment-processing-outline me-1"></i>
+                    <span>{{format(item.expand.comments)}}</span>
+                  </span>
+                  <span class="text-muted fs-em-06 flex-center">
+                    <i class="mdi mdi mdi-eye-circle-outline me-1"></i>
+                    <span>{{format(item.views)}}</span>
+                  </span>
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="text-center mb-2">
+            <span v-show="!empty(search.result.article.data) && search.page.article != search.result.article.page" v-on:click="runSearch(false,{article:search.page.article+1})" class="cursor opacity-06 opacity-hover-10 see-more">
+              <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+              <span class="font-11 text-muted">{{(search.load) ? '加载中...' : '加载更多'}}</span>
+            </span>
+            <span v-show="empty(search.result.article.data) || search.page.article == search.result.article.page" class="cursor opacity-06 opacity-hover-10 see-more">
+              <span v-if="search.load" class="flex-center">
+                <div class="spinner-border text-primary wh-16px m-1" role="status"></div>
+                <div>加载中 ...</div>
+              </span>
+              <span v-else>没有更多内容了</span>
+            </span>
+          </div>
+        </div>
+        <div id="search-page" class="tab-pane">
+          <div v-show="!empty(search.result.page.data)" class="row mt-3">
+            <div v-for="(item, index) in search.result.page.data" :key="index" class="col-12">
+              <div class="card">
+                <h6 class="card-header">
+                  <span>{{item.title || '标题'}}</span>
+                  <span class="float-right">{{nature(item.create_time)}}</span>
+                </h6>
+                <div class="card-body">
+                  <p class="card-text text-line line-limit-3">{{item.content || '内容'}}</p>
+                  <a :href="'/page/' + item.alias + '.html'" class="btn btn-light">
+                    前往页面
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mb-2">
+            <span v-show="!empty(search.result.page.data) && search.page.page != search.result.page.page" v-on:click="runSearch(false,{page:search.page.page+1})" class="cursor opacity-06 opacity-hover-10 see-more">
+              <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+              <span class="font-11 text-muted">{{(search.load) ? '加载中...' : '加载更多'}}</span>
+            </span>
+            <span v-show="empty(search.result.page.data) || search.page.page == search.result.page.page" class="cursor opacity-06 opacity-hover-10 see-more">
+              <span v-if="search.load" class="flex-center">
+                <div class="spinner-border text-primary wh-16px m-1" role="status"></div>
+                <div>加载中 ...</div>
+              </span>
+              <span v-else>没有更多内容了</span>
+            </span>
+          </div>
+        </div>
+        <div id="search-comments" class="tab-pane">
+          <div class="media row markdown comments" v-highlight>
+            <div v-for="(item, index) in search.result.comments.data" :key="index" class="inbox-widget col-md-12">
+              <div class="inbox-item">
+                <div class="inbox-item-img">
+                  <a :href="(item.url == null) ? item.url : '//'+item.url" target="_blank">
+                    <img :src="item.expand.head_img" class="rounded-circle img-thumbnail" height="50" width="50">
+                  </a>
+                </div>
+                <h5 class="inbox-item-author mt-0">
+                  <a :href="(item.url == null) ? item.url : '//'+item.url" target="_blank" class="text-dark">{{ item.nickname }}</a>
+                  <span class="text-muted font-13 mx-2">{{ nature(item.create_time) }}</span>
+                </h5>
+                <p v-html="item.expand.html" class="text-dark mb-0"></p>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mb-2">
+            <span v-show="!empty(search.result.comments.data) && search.page.comments != search.result.comments.page" v-on:click="runSearch(false,{comments:search.page.comments+1})" class="cursor opacity-06 opacity-hover-10 see-more">
+              <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+              <span class="font-11 text-muted">{{(search.load) ? '加载中...' : '加载更多'}}</span>
+            </span>
+            <span v-show="empty(search.result.comments.data) || search.page.comments == search.result.comments.page" class="cursor opacity-06 opacity-hover-10 see-more">
+              <span v-if="search.load" class="flex-center">
+                <div class="spinner-border text-primary wh-16px m-1" role="status"></div>
+                <div>加载中 ...</div>
+              </span>
+              <span v-else>没有更多内容了</span>
+            </span>
+          </div>
+        </div>
+        <div id="search-links" class="tab-pane">
+          <div v-show="!empty(search.result.links.data)" class="row mt-3">
+            <div v-for="(item, index) in search.result.links.data" :key="index" class="col-md-6">
+              <div class="card text-white bg-white text-xs-center">
+                <div class="card-body pb-0">
+                  <blockquote class="card-bodyquote">
+                    <a :href="item.url || '#'" target="_blank">
+                      <img :src="item.head_img || 'assets/images/empty.png'" height="42" width="42" class="rounded-circle shadow-sm head-img">
+                      <span class="text-muted">{{item.name || '昵称'}}</span>
+                    </a>
+                    <p class="text-muted mt-2 mb-0">{{item.description || '这个人很神秘~'}}</p>
+                  </blockquote>
+                </div>
+                <div class="card-footer text-muted">
+                  相识于：{{nature((item.create_time || '2021-3-14 05:20:00'), 1)}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mb-2">
+            <span v-show="!empty(search.result.links.data) && search.page.links != search.result.links.page" v-on:click="runSearch(false,{links:search.page.links+1})" class="cursor opacity-06 opacity-hover-10 see-more">
+              <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+              <span class="font-11 text-muted">{{(search.load) ? '加载中...' : '加载更多'}}</span>
+            </span>
+            <span v-show="empty(search.result.links.data) || search.page.links == search.result.links.page" class="cursor opacity-06 opacity-hover-10 see-more">
+              <span v-if="search.load" class="flex-center">
+                <div class="spinner-border text-primary wh-16px m-1" role="status"></div>
+                <div>加载中 ...</div>
+              </span>
+              <span v-else>没有更多内容了</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 搜索结果 - 结束 -->
+  </div>
+  <div class="col-lg-4">
+    <!-- 热门文章 - 开始 -->
+    [[if .hot.Data.data | not_empty]]
+    <div class="card hot">
+      <div class="card-body p-2">
+      [[range $key, $val := .hot.Data.data]]
+        [[if eq $key 0]]
+        <div class="col-12 px-0 first ribbon-box">
+          <a href="/article/[[$val.id]].html">
+            <div class="ribbon ribbon-danger float-start">
+              <svg t="1647016295882" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2202" width="16" height="16"><path d="M517.546667 91.733333A42.666667 42.666667 0 0 0 494.933333 85.333333h-4.266666a21.333333 21.333333 0 0 0-21.333334 21.333334v197.12a21.333333 21.333333 0 0 1-39.253333 11.52 305.92 305.92 0 0 0-104.106667-74.666667 20.053333 20.053333 0 0 0-18.346666 0 20.906667 20.906667 0 0 0-8.96 17.493333c-13.226667 120.746667-128 170.666667-128 341.333334a341.333333 341.333333 0 0 0 682.666666 0c0-267.946667-232.96-443.306667-335.786666-507.733334zM512 853.333333a170.666667 170.666667 0 0 1-170.666667-170.666666c0-115.2 116.053333-181.76 128-246.613334a10.666667 10.666667 0 0 1 11.946667-8.533333A281.173333 281.173333 0 0 1 682.666667 682.666667a170.666667 170.666667 0 0 1-170.666667 170.666666z" p-id="2203" fill="#ffffff"></path></svg>
+              <span class="font-12">TOP 1</span>
+            </div>
+            <img src="[[$val.expand.img_src]]" class="w-100 img-cover" height="200">
+            <div class="img-mark"></div>
+            <div class="text-white single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-1">
+              <span class="badge badge-danger-lighten font-11 ml-2">{{format('[[$val.views]]')}}人已阅读</span>
+              <br>
+              <span class="ml-2 font-18">[[$val.title]]</span>
+            </div>
+          </a>
+        </div>
+        [[else]]
+        <div class="row my-2 ribbon-box">
+          <div class="col-5 col-md-4">
+            <div class="[[if gt $key 2]]ribbon-warning[[else]]ribbon-info[[end]] ribbon custom-ribbon float-start">
+              TOP
+              [[if eq $key 1]]
+              2
+              [[else if eq $key 2]]
+              3
+              [[else if eq $key 3]]
+              4
+              [[else if eq $key 4]]
+              5
+              [[end]]
+            </div>
+            <a href="/article/[[$val.id]].html">
+              <img src="[[$val.expand.img_src]]" class="img-cover w-100" height="70">
+            </a>
+          </div>
+          <div class="col-7 col-md-8 flex-vertical">
+            <a href="/article/[[$val.id]].html" class="text-muted mb-1">
+              <span class="text-dark font-14 text-dark">[[$val.title]]</span>
+            </a>
+            <p class="mb-1">
+              <span class="text-muted">
+                  {{nature('[[$val.create_time]]')}}
+              </span>
+              <span class="float-end">
+                  <span class="text-muted font-12">
+                      <span>{{format('[[$val.views]]')}}人已阅读</span>
+                  </span>
+              </span>
+            </p>
+          </div>
+        </div>
+        [[end]]
+      [[end]]
+      </div>
+    </div>
+    [[end]]
+    <!-- 热门文章 - 结束 -->
+    <!-- 标签云 - 开始 -->
+    [[if .tag.Data.data | not_empty]]
+    <p class="ml-3 mb-2">
+      <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+      <span class="font-16 text-dark">标签云</span>
+    </p>
+    <div class="card mb-2">
+      <div class="card-body p-2">
+        [[range $key, $val := .tag.Data.data]]
+        <a href="/tag/[[$val.name]]">
+          <span class="badge badge-[[$val.expand.color]]-lighten cursor" style="margin: 2px;">
+              [[$val.name]]([[$val.expand.count]])
+          </span>
+        </a>
+        [[end]]
+      </div>
+    </div>
+    [[end]]
+    <!-- 标签云 - 结束 -->
+    <!-- 一言 - 开始 -->
+    <p v-if="!empty(hitokoto.data)" class="ml-3 mb-2">
+      <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+      <span class="font-16 text-dark">一言</span>
+    </p>
+    <div v-if="!empty(hitokoto.data)" class="card mb-2">
+      <div class="card-body">
+        <div class="card-widgets">
+          <a v-on:click="runHitokoto()" href="javascript:;"><i class="mdi mdi-refresh"></i></a>
+          <a data-bs-toggle="collapse" href="#hitokoto" role="button" aria-expanded="true" aria-controls="hitokoto"><i class="mdi mdi-minus"></i></a>
+          <a href="javascript:;" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+        </div>
+        <h5 class="card-title mb-0"># {{hitokoto.data.from || '来自'}} #</h5>
+        <div id="hitokoto" class="pt-3 collapse show">
+          <div>
+            {{hitokoto.data.hitokoto || '内容'}}
+          </div>
+          <div v-show="!empty(hitokoto.data.from_who)" class="float-end">
+            作者：{{hitokoto.data.from_who || '作者'}}
+          </div>
+        </div>
+      </div>
+      <div v-if="hitokoto.load" class="card-disabled opacity-07">
+        <div class="card-portlets-loader"></div>
+      </div>
+    </div>
+    <!-- 一言 - 结束 -->
+  </div>
+
+</div>
+[[end]]

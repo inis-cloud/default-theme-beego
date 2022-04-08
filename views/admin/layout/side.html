@@ -1,0 +1,50 @@
+<div id="left-side" class="leftside-menu leftside-menu-detached">
+
+  <div class="leftbar-user">
+    <a href="javascript:;">
+      <img :src="config.basic.site.head_img" alt="user-image" height="42" class="rounded-circle shadow-sm">
+      <span class="leftbar-user-name ms-0">{{config.basic.site.nickname}}</span>
+    </a>
+  </div>
+
+  <ul class="side-nav">
+
+    <li class="side-nav-title side-nav-item">导航</li>
+
+    <li v-if="false" class="side-nav-item">
+      <a href="/admin" class="side-nav-link">
+        <i class="mdi mdi-home-edit-outline"></i>
+        <span> 控制台 </span>
+      </a>
+    </li>
+
+    <li class="side-nav-item">
+      <a href="/admin/personal.html" class="side-nav-link">
+        <i class="mdi mdi-account-edit"></i>
+        <span> 个人资料 </span>
+      </a>
+    </li>
+
+    <li v-if="level('admin')" class="side-nav-title side-nav-item">控制台</li>
+
+    <li v-if="level('admin')" class="side-nav-item">
+      <a href="/admin/config.html" class="side-nav-link">
+        <i class="mdi mdi-cog-outline"></i>
+        <span> 主题配置 </span>
+      </a>
+    </li>
+
+  </ul>
+
+  <div v-if="config.other.help.is_show" class="help-box help-box-light text-center mt-2">
+    <a href="javascript:;" class="float-end close-btn text-body">
+      <i class="mdi mdi-close"></i>
+    </a>
+    <img :src="'/' + config.other.help.img_src || '/assets/images/help-icon.svg'" height="90">
+    <p class="my-2">{{config.other.help.description || ''}}</p>
+    <a :href="config.other.help.btn_url" target="_blank" class="btn btn-outline-primary btn-sm">{{config.other.help.btn_text || ''}}</a>
+  </div>
+
+  <div class="clearfix"></div>
+
+</div>

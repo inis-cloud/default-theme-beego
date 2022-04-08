@@ -1,0 +1,48 @@
+<div id="setting" class="end-bar">
+    <div class="rightbar-title">
+        <a href="javascript:;" class="end-bar-toggle float-end">
+            <i class="dripicons-cross noti-icon"></i>
+        </a>
+        <h5 class="m-0">自定义UI</h5>
+    </div>
+    <div class="rightbar-content h-100" data-simplebar="">
+
+        <div class="p-3">
+            <div class="alert alert-warning" role="alert">
+                自定义整体配色方案，侧边栏菜单等。
+            </div>
+
+            <h5 class="mt-3">配色方案</h5>
+            <hr class="mt-1">
+            <div class="form-check form-switch mb-1">
+                <input v-model="config.mode.theme" value="light" type="radio" class="form-check-input" id="light-mode-radio" name="color-scheme-mode">
+                <label class="form-check-label" for="light-mode-radio">日间模式</label>
+            </div>
+
+            <div class="form-check form-switch mb-1">
+                <input v-model="config.mode.theme" value="dark" type="radio" class="form-check-input" id="dark-mode-radio" name="color-scheme-mode">
+                <label class="form-check-label" for="dark-mode-radio">夜间模式</label>
+            </div>
+
+            <h5 class="mt-4">侧边栏</h5>
+            <hr class="mt-1">
+
+            <div class="form-check form-switch mb-1">
+                <input v-model="config.mode.leftbar" value="fixed" type="radio" class="form-check-input" name="compact" id="fixed-radio" checked="">
+                <label class="form-check-label" for="fixed-radio">展开</label>
+            </div>
+
+            <div class="form-check form-switch mb-1">
+                <input v-model="config.mode.leftbar" value="condensed" type="radio" class="form-check-input" name="compact" id="condensed-radio">
+                <label class="form-check-label" for="condensed-radio">收缩</label>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button v-on:click="reset()" class="btn btn-primary" id="resetBtn">重置配置</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="rightbar-overlay"></div>

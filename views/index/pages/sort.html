@@ -1,0 +1,173 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+[[.item.Data.name]] 分类 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+[[end]]
+
+[[define "script"]]
+[[assets_js "/assets/js/pages/index/sort.js"]]
+[[end]]
+
+[[define "content"]]
+<div id="sort" class="container-xxl mw-100v mw-lg-65v">
+    <div class="card">
+        <div class="card-body p-0">
+            <img src="[[.config.Data.opt.other.images.cross_bg]]" height="300" class="w-100 img-cover img-h-auto">
+            <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
+                <h4 v-if="!self.cover" class="text-white subscript-left before-info cursor mb-1">
+                    <i class="mdi mdi-tag-multiple"></i>
+                    [[.item.Data.name]]
+                    -
+                    共[[.item.Data.expand.count]]篇
+                </h4>
+                <h4 v-else class="text-white subscript-left before-info cursor mb-1">
+                    <i class="mdi mdi-tag-multiple"></i>
+                    {{self.data?.name}}
+                    -
+                    共{{self.data?.expand?.count || 0}}篇
+                </h4>
+                <p class="text-white mb-0">
+                    <i class="mdi mdi-map-marker"></i>
+                    <span>[[.config.Data.opt.basic.site.title]]</span>
+                    <i class="mdi mdi-slash-forward opacity-75"></i>
+                    <span>{{(state.type == 'sort' || empty(state.type)) ? '分类' : '标签'}}</span>
+                    <i class="mdi mdi-slash-forward opacity-75"></i>
+                    <span v-if="!self.cover">[[.item.Data.name]]</span>
+                    <span v-else>{{self?.data?.name}}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <p class="ms-3 mb-2">
+        <span class="bullet bullet-vertical bg-info h-13px mr-2"></span>
+        <span class="font-16 text-dark me-4">分类</span>
+        <span v-for="(item, index) in sortList.data.data" :key="index" v-on:click="hasSort(true, item.name)" class="badge mimic box-shadow cursor p-2 me-1 mb-1">
+            <span :class="(state.type == 'sort' && item.name == state.name) ? 'text-info p-1' : 'text-secondary p-1'">{{item.name}} [{{item.expand.count || 0}}]</span>
+        </span>
+    </p>
+    <p class="ms-3 mb-2">
+        <span class="bullet bullet-vertical bg-info h-13px mr-2"></span>
+        <span class="font-16 text-dark me-4">标签</span>
+        <span v-for="(item, index) in tagList.data.data" :key="index" v-on:click="hasTag(true, item.name)" class="badge mimic box-shadow cursor p-2 me-1 mb-1">
+            <span :class="(state.type == 'tag' && item.name == state.name) ? 'text-info p-1' : 'text-secondary p-1'">{{item.name}} [{{item.expand.count || 0}}]</span>
+        </span>
+    </p>
+    <p class="ms-3 mb-2">
+        <span class="bullet bullet-vertical bg-info h-13px mr-2"></span>
+        <span class="font-16 text-dark me-4">排序</span>
+        <span v-on:click="setOrder('create_time desc', 0)" class="badge mimic box-shadow cursor p-2 me-1 mb-1">
+            <span :class="state.order.index == 0 ? 'text-info p-1' : 'text-secondary p-1 '">最新</span>
+        </span>
+        <span v-on:click="setOrder('create_time acs', 1)" class="badge mimic box-shadow cursor p-2 me-1 mb-1">
+            <span :class="state.order.index == 1 ? 'text-info p-1' : 'text-secondary p-1 '">最早</span>
+        </span>
+        <span v-on:click="setOrder('views desc', 2)" class="badge mimic box-shadow cursor p-2 me-1 mb-1">
+            <span :class="state.order.index == 2 ? 'text-info p-1' : 'text-secondary p-1 '">热门</span>
+        </span>
+    </p>
+    <div v-if="!self.cover" class="row">
+        [[range $index, $item := .item.Data.expand.data]]
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <a href="/article/[[$item.id]].html" class="img-shadow hover-a-img">
+                                <img src="[[$item.expand.img_src]]" class="img-cover w-100 img-h-auto" height="130">
+                            </a>
+                        </div>
+                        <div class="col-lg-7 flex-vertical mt-2 mt-lg-0">
+                            <a href="/article/[[$item.id]].html" class="text-secondary">
+                                <span class="font-16 fw-bold">[[$item.title]]</span>
+                            </a>
+                            <p class="line-2 text-muted font-13 mb-0">[[$item.description]]</p>
+                            <p class="mb-0">
+                                [[range $index, $item := $item.expand.tag]]
+                                <span class="badge badge-[[$item.color]]-lighten hover-opacity-80 cursor py-1 px-2 me-1 mb-1">
+                                    <span>[[$item.name]]</span>
+                                </span>
+                                [[end]]
+                            </p>
+                            <p class="mb-0 justify-content-between">
+                                <span>
+                                    <img src="[[$item.expand.author.head_img]]" class="rounded-circle avatar-xs">
+                                    [[$item.expand.author.nickname]]
+                                </span>
+                                <span class="icon-circle">{{nature("[[$item.create_time]]")}}</span>
+                                <span class="float-end flex-center">
+                                    <i class="mdi mdi-comment-processing-outline"></i>
+                                    <span class="px-1">{{format("[[$item.expand.comments]]")}}</span>
+                                    <i class="mdi mdi-eye-circle-outline"></i>
+                                    <span class="px-1">{{format("[[$item.views]]")}}</span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        [[end]]
+    </div>
+    <div v-else-if="self.cover && !self.loading" class="row">
+        <div v-for="(item, index) in self?.data?.expand?.data" :key="index" class="col-lg-6">
+            <div class="card">
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <a :href="'/article/' + item.id + '.html'" class="img-shadow hover-a-img">
+                                <img :src="item.expand.img_src" class="img-cover w-100 img-h-auto" height="130">
+                            </a>
+                        </div>
+                        <div class="col-lg-7 flex-vertical mt-2 mt-lg-0">
+                            <a :href="'/article/' + item.id + '.html'" class="text-secondary">
+                                <span class="font-16 fw-bold">{{item.title}}</span>
+                            </a>
+                            <p class="line-2 text-muted font-13 mb-0">{{item.description}}</p>
+                            <p class="mb-0">
+                                <span v-for="(item, index) in item.expand.tag" :key="index" :class="'badge badge-' + item.color + '-lighten hover-opacity-80 cursor py-1 px-2 me-1 mb-1'">
+                                    <span>{{item.name}}</span>
+                                </span>
+                            </p>
+                            <p class="mb-0 justify-content-between">
+                                <span>
+                                    <img :src="item.expand.author.head_img" class="rounded-circle avatar-xs">
+                                    {{item.expand.author.nickname}}
+                                </span>
+                                <span class="icon-circle">{{nature(item.create_time)}}</span>
+                                <span class="float-end flex-center">
+                                    <i class="mdi mdi-comment-processing-outline"></i>
+                                    <span class="px-1">{{format(item.expand.comments)}}</span>
+                                    <i class="mdi mdi-eye-circle-outline"></i>
+                                    <span class="px-1">{{format(item.views)}}</span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="self.loading" class="card-body flex-center">
+        <div class="spinner-border text-info w-16px h-16px m-2" role="status"></div>
+        <span class="text-muted">加载中 ...</span>
+    </div>
+    <div v-if="!self.loading" class="text-center mb-2">
+        <span v-if="!self.page.end" v-on:click="next()" class="cursor opacity-06 opacity-hover-10 see-more">
+            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+            <span class="font-11 text-muted">加载更多</span>
+        </span>
+        <span v-else class="cursor opacity-06 opacity-hover-10 see-more">
+            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+            <span class="font-11 text-muted">没有更多内容了</span>
+        </span>
+    </div>
+</div>
+[[end]]

@@ -1,0 +1,401 @@
+[[template "admin/layout/base.html" .]]
+
+[[define "title"]]
+主题配置 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]][[end]]
+
+[[define "script"]]
+[[assets_js "/assets/js/pages/admin/config.js"]]
+[[end]]
+
+[[define "content"]]
+<div class="card">
+    <div class="card-body">
+        <ul class="nav nav-tabs nav-bordered border-0">
+            <li class="nav-item">
+                <a href="#config-basic" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
+                    <span>基本配置</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#config-other" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                    <span>其他配置</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#config-develop" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                    <span>开发者配置</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="tab-content">
+            <!-- 基础配置 - 开始 -->
+            <div id="config-basic" class="tab-pane show active">
+                <div class="card mb-1">
+                    <div class="card-header" id="config-basic-site">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-basic-site-content"
+                               aria-expanded="true" aria-controls="config-basic-site-content">
+                                # 站点信息
+                                <span class="text-muted font-13">（站点标题、站点描述、站点头像、favicon、博主昵称、博主介绍、备案信息）</span>
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="config-basic-site-content" class="collapse show" aria-labelledby="config-basic-site" data-bs-parent="#config-basic">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>站点标题</label>
+                                        <input v-model="config.basic.site.title" type="text" class="form-control customize-input" placeholder="起个响亮的名字">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>关键词</label>
+                                        <input v-model="config.basic.site.keywords" type="text" class="form-control customize-input" placeholder="收录关键词（用英文 , 号隔开多个）">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>站点描述</label>
+                                        <input v-model="config.basic.site.description" type="text" class="form-control customize-input" placeholder="最好能生动形象的介绍一下">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>favicon 地址</label>
+                                        <input v-model="config.basic.site.favicon" type="text" class="form-control customize-input" placeholder="浏览器的图标标识">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>站点头像</label>
+                                        <input v-model="config.basic.site.head_img" type="text" class="form-control customize-input" placeholder="通过头像记住你！">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>博主昵称</label>
+                                        <input v-model="config.basic.site.nickname" type="text" class="form-control customize-input" placeholder="大家对您的爱称！">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>博主介绍</label>
+                                        <input v-model="config.basic.site.present" type="text" class="form-control customize-input" placeholder="称赞一下棒棒的自己！">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>备案号码</label>
+                                        <input v-model="config.basic.site.copy.code" type="text" class="form-control customize-input" placeholder="国内服务器请填写备案号，避免被国家罚款">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>工信部地址</label>
+                                        <input v-model="config.basic.site.copy.url" type="text" class="form-control customize-input" placeholder="按工信部要求，填写工信部的地址">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div v-show="false" class="card mb-0">
+                        <div class="card-header" id="config-basic-theme">
+                            <h5 class="m-0">
+                                <a class="custom-accordion-title collapsed d-block pt-2 pb-2"
+                                   data-bs-toggle="collapse" href="#config-basic-theme-content"
+                                   aria-expanded="false" aria-controls="config-basic-theme-content">
+                                    # 主题设置
+                                    <span class="text-muted font-13">（主题颜色、主题透明度、静态背景、动态背景）</span>
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="config-basic-theme-content" class="collapse" aria-labelledby="config-basic-theme" data-bs-parent="#config-basic">
+                            <div class="card-body">
+                                第一个版本暂时不做这些花里花哨的东西
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <!-- 基础配置 - 结束 -->
+            <!-- 其他配置 - 开始 -->
+            <div id="config-other" class="tab-pane">
+                <div v-show="false" class="card mb-1">
+                    <div class="card-header" id="config-other-module">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-other-module-content"
+                               aria-expanded="true" aria-controls="config-other-module-content">
+                                # 小组件
+                                <span class="text-muted font-13">（轮播、首页欢迎、音乐播放器、文章版权）</span>
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="config-other-module-content" class="collapse show" aria-labelledby="config-other-module" data-bs-parent="#config-other">
+                        <div class="card-body">
+                            第一个版本暂时不做这些花里花哨的东西
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-header" id="config-other-image">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title collapsed d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-other-image-content"
+                               aria-expanded="false" aria-controls="config-other-image-content">
+                                # 图片配置
+                                <span class="text-muted font-13">（图片预加载、图片加载失败、时光机背景图、LOGO）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-other-image-content" class="collapse" aria-labelledby="config-other-image" data-bs-parent="#config-other">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>日间模式大LOGO</label>
+                                        <input v-model="config.other.images.logo.day.big" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>日间模式小LOGO</label>
+                                        <input v-model="config.other.images.logo.day.small" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>夜间模式大LOGO</label>
+                                        <input v-model="config.other.images.logo.night.big" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>夜间模式小LOGO</label>
+                                        <input v-model="config.other.images.logo.night.small" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-header" id="config-other-help">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title collapsed d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-other-help-content"
+                               aria-expanded="false" aria-controls="config-other-help-content">
+                                # 帮助信息
+                                <span class="text-muted font-13">（帮助信息会显示在左边侧边栏）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-other-help-content" class="collapse" aria-labelledby="config-other-help" data-bs-parent="#config-other">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>描述</label>
+                                        <input v-model="config.other.help.description" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>图片地址</label>
+                                        <input v-model="config.other.help.img_src" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>按钮文字</label>
+                                        <input v-model="config.other.help.btn_text" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-3">
+                                        <label>按钮跳转地址</label>
+                                        <input v-model="config.other.help.btn_url" type="text" class="form-control customize-input">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <p class="mb-0 flex">
+                                            是否显示帮助：
+                                            <input v-model="config.other.help.is_show" type="checkbox" id="is-help" data-switch="success">
+                                            <label for="is-help" data-on-label="Yes" data-off-label="No"></label>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-show="false" class="card mb-0">
+                    <div class="card-header" id="config-other-copy">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title collapsed d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-other-copy-content"
+                               aria-expanded="false" aria-controls="config-other-copy-content">
+                                # 复制
+                                <span class="text-muted font-13">（整站任意位置复制内容后，在末尾添加自定义的内容）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-other-copy-content" class="collapse" aria-labelledby="config-other-copy" data-bs-parent="#config-other">
+                        <div class="card-body">
+                            第一个版本暂时不做这些花里花哨的东西
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 其他配置 - 结束 -->
+            <!-- 开发者配置 - 开始 -->
+            <div id="config-develop" class="tab-pane">
+                <div class="card mb-1">
+                    <div class="card-header" id="config-develop-left-side">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-develop-left-side-content"
+                               aria-expanded="true" aria-controls="config-develop-left-side-content">
+                                # 侧边栏菜单
+                                <span class="text-muted font-13">（一级菜单、二级菜单）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-develop-left-side-content" class="collapse show" aria-labelledby="config-develop-left-side" data-bs-parent="#config-develop">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>一级菜单</label>
+                                        <textarea v-model="config.developer.menu.one" rows="4" class="form-control customize-textarea customize-scroll" placeholder="JSON代码"></textarea>
+                                        <p class="text-muted mb-0">
+                                            推荐将配置复制粘贴到
+                                            <a href="//json.cn" target="_blank">在线编辑器</a>
+                                            编辑
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>二级菜单</label>
+                                        <textarea v-model="config.developer.menu.two" rows="4" class="form-control customize-textarea customize-scroll" placeholder="JSON代码"></textarea>
+                                        <p class="text-muted mb-0">
+                                            推荐将配置复制粘贴到
+                                            <a href="//json.cn" target="_blank">在线编辑器</a>
+                                            编辑
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-header" id="config-develop-customize-code">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-develop-customize-code-content"
+                               aria-expanded="true" aria-controls="config-develop-customize-code-content">
+                                # 自定义代码
+                                <span class="text-muted font-13">（提供开发者使用的自定义代码配置）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-develop-customize-code-content" class="collapse" aria-labelledby="config-develop-customize-code" data-bs-parent="#config-develop">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>自定义 JS</label>
+                                        <textarea v-model="config.developer.code.js" rows="4" class="form-control customize-textarea customize-scroll" placeholder="这里填写的是JavaScript代码，会自动输出到</body>标签之前"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>自定义 CSS</label>
+                                        <textarea v-model="config.developer.code.css" rows="4" class="form-control customize-textarea customize-scroll" placeholder="这里填写的是css代码，会自动输出到</head>标签之前"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>自定义输出head 头部的HTML代码</label>
+                                        <textarea v-model="config.developer.code.html.head" rows="4" class="form-control customize-textarea customize-scroll" placeholder="这里填写的是html代码，会输入到</head>之前"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>自定义输出body 尾部的HTML代码</label>
+                                        <textarea v-model="config.developer.code.html.body" rows="4" class="form-control customize-textarea customize-scroll" placeholder="这里填写的是html代码，会输入到</body>之前"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-0">
+                    <div class="card-header" id="config-develop-footer">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-develop-footer-content"
+                               aria-expanded="true" aria-controls="config-develop-footer-content">
+                                # 页脚
+                                <span class="text-muted font-13">（博客底部页脚处）</span>
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="config-develop-footer-content" class="collapse" aria-labelledby="config-develop-footer" data-bs-parent="#config-develop">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>底部左侧信息</label>
+                                        <textarea v-model="config.developer.footer.left" rows="4" class="form-control customize-textarea customize-scroll" placeholder="推荐填写HTML代码"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-3">
+                                        <label>底部右侧信息</label>
+                                        <textarea v-model="config.developer.footer.right" rows="4" class="form-control customize-textarea customize-scroll" placeholder="推荐填写HTML代码"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 开发者配置 - 结束 -->
+        </div>
+        <div class="float-start mt-3">
+            <button v-on:click="initConfig()" type="button" class="btn btn-light">
+                <i class="mdi mdi-cog-refresh-outline me-1"></i>
+                <span>恢复默认配置</span>
+            </button>
+        </div>
+        <div class="float-end mt-3">
+            <button v-on:click="saveConfig()" type="button" class="btn btn-info">
+                <i class="mdi mdi-content-save-cog me-1"></i>
+                <span>保存配置</span>
+            </button>
+        </div>
+    </div>
+</div>
+[[end]]

@@ -1,0 +1,154 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+友链库 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+[[assets_css "https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css"]]
+[[assets_css "/assets/libs/highlight/index.css"]]
+[[end]]
+
+[[define "script"]]
+[[assets_js "https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js"]]
+[[assets_js "https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"]]
+[[assets_js "/assets/libs/highlight/index.js"]]
+[[assets_js "/assets/js/pages/index/chic/links.js"]]
+[[end]]
+
+[[define "content"]]
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <ul class="nav nav-tabs nav-bordered mb-3">
+                    <li class="nav-item">
+                        <a href="#links-item" data-bs-toggle="tab" aria-expanded="false" class="nav-link active">
+                            <span>申请友链</span>
+                        </a>
+                    </li>
+                    <li v-for="(item, index) in sort.data" :key="index" v-on:click="hasLinksSort(item.id)" class="nav-item">
+                        <a :href="'#links-sort-' + item.id" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                            <span>{{item.name}}</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane show active" id="links-item">
+                        <div v-if="!show.item" class="flex-center">
+                            无当前页面数据，请在后端中新建别名为links的页面
+                        </div>
+                        <div v-else v-highlight v-html="item.content" class="markdown"></div>
+                    </div>
+                    <div v-for="(item, index) in sort.data" :key="index" :id="'links-sort-' + item.id" class="tab-pane">
+                        <div v-if="load.preview" class="flex-center">
+                            <div class="spinner-border text-primary w-20px h-20px m-2" role="status"></div>
+                            加载中 ...
+                        </div>
+                        <div v-else class="row">
+                            <div v-for="(item, index) in preview.expand.data" :key="index" class="col-lg-6">
+                                <div class="card mimic box-shadow cursor">
+                                    <div class="card-body p-1">
+                                        <a :href="item.url" target="_blank" class="d-flex align-items-start mt-1 p-2">
+                                            <img :src="item.head_img" class="me-2 rounded-circle" height="48">
+                                            <div class="w-100 overflow-hidden">
+                                                <h5 class="mt-0 mb-0 font-14">
+                                                    <span class="float-end text-muted font-12">{{nature(item.create_time)}}</span>
+                                                    <span class="text-muted">{{item.name}}</span>
+                                                </h5>
+                                                <p class="mt-1 mb-0 text-muted font-14">
+                                                    <span class="w-75">{{item.description}}</span>
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="page.preview.show" class="flex-center">
+                            <div class="btn-group">
+                                <button v-on:click="hasLinksSort(item.id, 1)" type="button" class="btn btn-sm btn-white box-shadow mimic">
+                                    <i class="mdi mdi-chevron-left"></i>
+                                </button>
+                                <button v-for="(value, index) in page.preview.list" :key="index" v-on:click="hasLinksSort(item.id, value)" class="btn btn-sm btn-white box-shadow mimic mx-1">
+                                    {{value}}
+                                </button>
+                                <button v-on:click="hasLinksSort(item.id, preview?.expand?.page)" type="button" class="btn btn-sm btn-white box-shadow mimic">
+                                    <i class="mdi mdi-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div v-if="box.id == 0" class="card">
+            <div class="card-body px-2">
+                <h4 class="header-title mb-3 mx-2">
+                    评论
+                    <span class="badge bg-primary rounded-pill text-white float-end">1</span>
+                </h4>
+                <comment-box :params="commentBox" v-on:finish="finish"></comment-box>
+            </div>
+        </div>
+        <div class="card">
+            <div v-if="comments.count != 0" class="card-body">
+                <div class="row media markdown comments">
+                    <div v-for="(item, index) in comments.data" :key="index" class="inbox-widget col-md-12">
+                        <div class="inbox-item">
+                            <div class="inbox-item-img">
+                                <a href="#">
+                                    <img :src="item.expand.head_img" class="rounded-circle img-thumbnail" height="50" width="50">
+                                </a>
+                            </div>
+                            <h5 class="inbox-item-author mt-0">
+                                <a href="#" class="text-dark">{{item.nickname}}</a>
+                                <span class="text-muted font-13 mx-2">{{nature(item.create_time)}}</span>
+                                <span v-on:click="setBoxId(item.id)" class="badge bg-light text-dark rounded-pill cursor">回复</span>
+                            </h5>
+                            <p v-html="item.expand.html" v-highlight class="text-dark mb-0"></p>
+                        </div>
+                        <comment-box v-if="box.id == item.id" :params="commentBox" :placeholder="'回复 @' + item.nickname" v-on:cancel="setBoxId()" v-on:finish="finish"></comment-box>
+                        <div v-for="(item, index) in item.son" :key="index" class="inbox-item ml-3">
+                            <div class="inbox-item-img">
+                                <a href="#">
+                                    <img :src="item.expand.head_img" class="rounded-circle img-thumbnail" height="50" width="50">
+                                </a>
+                            </div>
+                            <h5 class="inbox-item-author mt-0">
+                                <a href="#" class="text-dark">{{item.nickname}}</a>
+                                <span class="text-muted font-13 mx-2">{{nature(item.create_time)}}</span>
+                                <span v-on:click="setBoxId(item.id)" class="badge bg-light text-dark rounded-pill cursor">回复</span>
+                            </h5>
+                            <p v-html="item.expand.html" v-highlight class="text-dark mb-0"></p>
+                            <comment-box v-if="box.id == item.id" :params="commentBox" :placeholder="'回复 @' + item.nickname" v-on:cancel="setBoxId" v-on:finish="finish"></comment-box>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mb-2">
+                    <span v-if="!page.comments.end" v-on:click="hasComment(page.comments.code+1)" class="cursor opacity-06 opacity-hover-10 see-more">
+                        <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                        <span class="font-11 text-muted">加载更多</span>
+                    </span>
+                    <span v-else class="cursor opacity-06 opacity-hover-10 see-more">
+                        <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                        <span class="font-11 text-muted">没有更多内容了</span>
+                    </span>
+                </div>
+            </div>
+            <div v-else class="card-body">
+                <div class="text-center">
+                    趁还没人评论，快抢沙发！
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+[[end]]

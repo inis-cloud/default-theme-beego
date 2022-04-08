@@ -1,0 +1,137 @@
+<div id="left-side" class="leftside-menu leftside-menu-detached">
+
+  <div class="leftbar-user">
+    <a href="javascript:;">
+      <img :src="config.basic.site.head_img" alt="user-image" height="42" class="rounded-circle shadow-sm">
+      <span class="leftbar-user-name ms-0">{{config.basic.site.nickname}}</span>
+    </a>
+  </div>
+
+  <ul class="side-nav">
+
+    <li class="side-nav-title side-nav-item">导航</li>
+
+    <li class="side-nav-item">
+      <a href="/" class="side-nav-link">
+        <i class="uil-home-alt"></i>
+        <span> 首页 </span>
+      </a>
+    </li>
+    <!-- 自定义菜单 - 开始 -->
+    <li v-if="menu.one.check" v-for="(item, index) in menu.one.data" :key="index" class="side-nav-item">
+      <a :href="item.url" :target="empty(item.target) ? '_self' : item.target" class="side-nav-link">
+        <i v-if="empty(item.svg)" :class="item.class"></i>
+        <i v-else v-html="item.svg"></i>
+        <span> {{item.title}} </span>
+      </a>
+    </li>
+    <div v-else class="alert alert-warning bg-white text-warning mb-0" role="alert">
+      您的 <strong>一级菜单</strong> 配置有误
+    </div>
+
+    <li v-if="menu.two.check" v-for="(item, index) in menu.two.data" :key="index" class="side-nav-item">
+      <a data-bs-toggle="collapse" :href="'#customize-left-side-' + index" aria-expanded="false" class="side-nav-link">
+        <i v-if="empty(item.svg)" :class="item.class"></i>
+        <i v-else v-html="item.svg"></i>
+        <span> {{item.title}} </span>
+        <span class="menu-arrow"></span>
+      </a>
+      <div class="collapse" :id="'customize-left-side-' + index">
+        <ul class="side-nav-second-level">
+          <li v-for="(item, index) in item.child" :key="index">
+            <a :href="item.url" :target="empty(item.target) ? '_self' : item.target">
+              {{item.title}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <div v-else class="alert alert-warning bg-white text-warning mb-0" role="alert">
+      您的 <strong>二级菜单</strong> 配置有误
+    </div>
+    <!-- 自定义菜单 - 结束 -->
+
+    <li class="side-nav-title side-nav-item">组成</li>
+
+    <li class="side-nav-item">
+      <a data-bs-toggle="collapse" href="#left-side-chic" aria-expanded="false" class="side-nav-link">
+        <i class="mdi mdi-star-check-outline"></i>
+        <span> 特色 </span>
+        <span class="menu-arrow"></span>
+      </a>
+      <div class="collapse" id="left-side-chic">
+        <ul class="side-nav-second-level">
+          <li>
+            <a href="/chic/links.html">友链库</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li v-if="sort.show" class="side-nav-item">
+      <a data-bs-toggle="collapse" href="#left-side-article-sort" aria-expanded="false" class="side-nav-link">
+        <i class="uil-document-layout-center"></i>
+        <span> 分类 </span>
+        <span class="menu-arrow"></span>
+      </a>
+      <div class="collapse" id="left-side-article-sort">
+        <ul class="side-nav-second-level">
+          <li v-for="(item, index) in sort.data.data" :key="index">
+            <a :href="'/sort/' + item.name">
+              <img :src="item.opt.head_img || '/assets/images/empty.png'" width="20" height="20" class="me-2">
+              {{item.name}}
+              <span class="badge text-primary float-end me-2">{{item.expand.count}}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li v-if="page.show" class="side-nav-item">
+      <a data-bs-toggle="collapse" href="#left-side-page" aria-expanded="false" class="side-nav-link">
+        <i class="uil-copy-alt"></i>
+        <span> 页面 </span>
+        <span class="menu-arrow"></span>
+      </a>
+      <div class="collapse" id="left-side-page">
+        <ul class="side-nav-second-level">
+          <li v-for="(item, index) in page.data.data" :key="index">
+            <a :href="'/page/' + item.alias + '.html'">
+              {{item.title}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+
+    <li v-if="link.show" class="side-nav-item">
+      <a data-bs-toggle="collapse" href="#left-side-link" aria-expanded="false" class="side-nav-link">
+        <i class="uil-package"></i>
+        <span> 友链 </span>
+        <span class="menu-arrow"></span>
+      </a>
+      <div class="collapse" id="left-side-link">
+        <ul class="side-nav-second-level">
+          <li v-for="(item, index) in link.data.data" :key="index">
+            <a :href="item.url" target="_blank">
+              <img :src="item.head_img || '/assets/image/empty.png'" width="20" height="20" class="me-2">
+              {{item.name}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+
+  <div v-if="config.other.help.is_show" class="help-box help-box-light text-center mt-2">
+    <a href="javascript:;" class="float-end close-btn text-body">
+      <i class="mdi mdi-close"></i>
+    </a>
+    <img :src="'/' + config.other.help.img_src || '/assets/images/help-icon.svg'" height="90">
+    <p class="my-2">{{config.other.help.description || ''}}</p>
+    <a :href="config.other.help.btn_url" target="_blank" class="btn btn-outline-primary btn-sm">{{config.other.help.btn_text || ''}}</a>
+  </div>
+
+  <div class="clearfix"></div>
+
+</div>

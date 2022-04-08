@@ -1,0 +1,232 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+[[.item.Data.title]] - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]][[range $key, $val := .item.Data.expand.tag]],[[$val.name]][[end]]'>
+<meta name="description" content='[[.item.Data.description]]'>
+[[end]]
+
+[[define "head"]]
+[[assets_css "https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css"]]
+[[assets_css "/assets/libs/highlight/index.css"]]
+[[end]]
+
+[[define "script"]]
+[[assets_js "https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js"]]
+[[assets_js "https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"]]
+[[assets_js "/assets/libs/highlight/index.js"]]
+[[assets_js "/assets/js/pages/index/article.js"]]
+[[end]]
+
+[[define "content"]]
+<div id="article" class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-0">
+                <div id="article-banner" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block w-100 img-cover" src="[[.item.Data.expand.img_src]]" height="300">
+                        </div>
+                        [[range $index, $item := .item.Data.expand.images]]
+                        <div class="carousel-item">
+                            <img class="d-block w-100 img-cover" src="[[$item.src]]" height="300">
+                        </div>
+                        [[end]]
+                    </div>
+                </div>
+                <span class="position-absolute top-0 end-0 p-2">
+                    <span class="badge bg-dark rounded-pill px-2">
+                        <span class="me-1">
+                            <svg t="1647017193586" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2216" width="12" height="12"><path d="M481.578667 968.832l-157.909334-158.293333H85.418667A85.290667 85.290667 0 0 1 0 725.12L0.426667 128.042667C0.426667 80.768 38.4 42.666667 85.845333 42.666667h852.778667c47.189333 0 85.418667 38.101333 85.376 85.418666l-0.426667 597.12c0 47.146667-38.229333 85.333333-85.376 85.333334h-237.781333l-158.549333 158.293333a42.624 42.624 0 0 1-60.288 0z m456.704-243.712L938.666667 128.042667s-852.906667-0.128-852.906667 0.042666c0 0-0.384 597.077333-0.298667 597.077334H341.333333c11.306667 0 22.186667 4.48 30.165334 12.501333l140.330666 140.629333 140.8-140.672a42.624 42.624 0 0 1 30.165334-12.458666h255.488zM277.333333 512a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z" fill="#ffffff" p-id="2217"></path></svg>
+                            {{format('[[.item.Data.expand.comments]]')}}
+                        </span>
+                        <span class="me-1">
+                            <svg t="1647017265258" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3827" width="18" height="18"><path d="M512 302c-162.377 0-304.149 85.065-380 211.5C207.851 639.935 349.623 725 512 725s304.149-85.065 380-211.5C816.149 387.065 674.377 302 512 302z m0-88.35c189.522 0 361.931 97.994 455.762 254.399a88.35 88.35 0 0 1 0 90.902C873.932 715.356 701.522 813.35 512 813.35S150.069 715.356 56.238 558.951a88.35 88.35 0 0 1 0-90.902C150.068 311.644 322.478 213.65 512 213.65z m0.5 428.525c-71.065 0-128.675-57.61-128.675-128.675 0-71.065 57.61-128.675 128.675-128.675 71.065 0 128.675 57.61 128.675 128.675 0 71.065-57.61 128.675-128.675 128.675z m0-88.35c22.27 0 40.325-18.054 40.325-40.325 0-22.27-18.054-40.325-40.325-40.325-22.27 0-40.325 18.054-40.325 40.325 0 22.27 18.054 40.325 40.325 40.325z" p-id="3828" fill="#ffffff"></path></svg>
+                            {{format('[[.item.Data.views]]')}}
+                        </span>
+                        <span>
+                            <svg t="1647017916044" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12065" width="13" height="13"><path d="M830 99H194c-53.02 0-96 42.98-96 96v634c0 53.02 42.98 96 96 96h636c53.02 0 96-42.98 96-96V195c0-53.02-42.98-96-96-96z m-636 64h636c17.673 0 32 14.327 32 32v634c0 17.673-14.327 32-32 32H194c-17.673 0-32-14.327-32-32V195c0-17.673 14.327-32 32-32z" fill="#ffffff" p-id="12066"></path><path d="M671.783 328c26.861 0 48.775 21.497 49.21 48.287l0.007 0.813V417h-64v-25H544.5v272.756l49.95 0.156-0.199 64-164.35-0.512 0.199-64 50.4 0.157V392H369v25h-64v-39.9c0-26.895 21.645-48.66 48.405-49.093l0.812-0.007h317.566z" fill="#ffffff" p-id="12067"></path></svg>
+                            {{format('[[.item.Data.font_count]]')}}
+                        </span>
+                    </span>
+                </span>
+                <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
+                    <h4 class="text-white before-info subscript-left cursor mb-1">
+                        [[.item.Data.title]]
+                        [[if .item.Data.expand.sort]]
+                            [
+                            [[range $index, $item := .item.Data.expand.sort]]
+                                [[$item.name]]
+                            [[end]]
+                            ]
+                        [[end]]
+                    </h4>
+                    <p class="text-white mb-0">
+                        <i class="mdi mdi-map-marker"></i>
+                        <span>[[.config.Data.opt.basic.site.title]]</span>
+                        <i class="mdi mdi-slash-forward opacity-75"></i>
+                        <span>文章</span>
+                        <i class="mdi mdi-slash-forward opacity-75"></i>
+                        <span>正文</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-start">
+                    <img class="me-2 rounded-circle" src="[[.item.Data.expand.author.head_img]]" width="40" alt="[[.item.Data.expand.author.description]]">
+                    <div class="w-100 overflow-hidden">
+<!--                        <small class="badge badge-warning-lighten float-end">占位符</small>-->
+                        <p class="text-dark font-14 mb-0">[[.item.Data.expand.author.nickname]]</p>
+                        <small class="text-muted">{{nature("[[.item.Data.last_update_time]]")}}更新</small>
+                    </div>
+                </div>
+            </div>
+            <div v-highlight class="card-body markdown preview px-2 px-lg-3">
+                [[str2html .item.Data.content]]
+            </div>
+        </div>
+        <div class="card first-comment-box">
+            <div class="card-header">
+                <h5>
+                    评论
+                    <span class="float-end">[[.item.Data.expand.comments]]</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <comment-box aid="[[.item.Data.id]]" v-on:finish="finish"></comment-box>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <comment-article id="[[.item.Data.id]]"></comment-article>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card hot">
+            <div class="card-body p-2">
+                [[range $index, $item := .hot.Data.data]]
+                    [[if eq $index 0]]
+                    <div class="col-12 px-0 first ribbon-box">
+                        <a href="/article/[[$item.id]].html">
+                            <div class="ribbon ribbon-danger float-start">
+                                <svg t="1647016295882" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2202" width="16" height="16"><path d="M517.546667 91.733333A42.666667 42.666667 0 0 0 494.933333 85.333333h-4.266666a21.333333 21.333333 0 0 0-21.333334 21.333334v197.12a21.333333 21.333333 0 0 1-39.253333 11.52 305.92 305.92 0 0 0-104.106667-74.666667 20.053333 20.053333 0 0 0-18.346666 0 20.906667 20.906667 0 0 0-8.96 17.493333c-13.226667 120.746667-128 170.666667-128 341.333334a341.333333 341.333333 0 0 0 682.666666 0c0-267.946667-232.96-443.306667-335.786666-507.733334zM512 853.333333a170.666667 170.666667 0 0 1-170.666667-170.666666c0-115.2 116.053333-181.76 128-246.613334a10.666667 10.666667 0 0 1 11.946667-8.533333A281.173333 281.173333 0 0 1 682.666667 682.666667a170.666667 170.666667 0 0 1-170.666667 170.666666z" p-id="2203" fill="#ffffff"></path></svg>
+                                <span class="font-12">TOP 1</span>
+                            </div>
+                            <img src="[[$item.expand.img_src]]" class="w-100 img-cover" height="200">
+                            <div class="img-mark"></div>
+                            <div class="text-white single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-1">
+                                <span class="badge badge-danger-lighten font-11 ml-2">{{format('[[$item.views]]')}}人已阅读</span>
+                                <br>
+                                <span class="ml-2 font-18">[[$item.title]]</span>
+                            </div>
+                        </a>
+                    </div>
+                    [[else]]
+                    <div class="row my-2 ribbon-box">
+                        <div class="col-5 col-md-4">
+                            <div class="[[if gt $index 2]]ribbon-warning[[else]]ribbon-info[[end]] ribbon custom-ribbon float-start">
+                                TOP
+                                [[if eq $index 1]]
+                                    2
+                                [[else if eq $index 2]]
+                                    3
+                                [[else if eq $index 3]]
+                                    4
+                                [[else if eq $index 4]]
+                                    5
+                                [[end]]
+                            </div>
+                            <a href="/article/[[$item.id]].html">
+                                <img src="[[$item.expand.img_src]]" class="img-cover w-100" height="70">
+                            </a>
+                        </div>
+                        <div class="col-7 col-md-8 flex-vertical">
+                            <a href="/article/[[$item.id]].html" class="text-muted mb-1">
+                                <span class="text-dark font-14 text-dark">[[$item.title]]</span>
+                            </a>
+                            <p class="mb-1">
+                                <span class="text-muted">
+                                    {{nature('[[$item.create_time]]')}}
+                                </span>
+                                <span class="float-end">
+                                    <span class="text-muted font-12">
+                                        <span>{{format('[[$item.views]]')}}人已阅读</span>
+                                    </span>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    [[end]]
+                [[end]]
+            </div>
+        </div>
+        <p v-if="!empty(directory)" class="ml-3 mb-2">
+            <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+            <span class="font-16 text-dark">目录</span>
+        </p>
+        <div v-if="!empty(directory)" class="card mb-2 directory">
+            <div class="card-body p-2">
+                <ul class="side-nav mb-0">
+                    <li v-for="(item, index) in directory" :key="index" class="side-nav-item">
+                        <a v-on:click="toTarget(item.id)" data-bs-toggle="collapse" :href="'#' + item.id + '-mark'" aria-expanded="false" :aria-controls="item.id + '-mark'" class="side-nav-link collapsed py-1">
+                            <i class="mdi mdi-tag-multiple text-dark"></i>
+                            <span class="text-dark"> {{item.text}} </span>
+                            <span v-if="item.children" class="menu-arrow text-dark"></span>
+                        </a>
+                        <div v-if="item.children" class="collapse" :id="item.id + '-mark'">
+                            <tree :array="item.children"></tree>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        [[if .item.Data.expand.tag]]
+        <p class="ml-3 mb-2">
+            <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+            <span class="font-16 text-dark">标签云</span>
+        </p>
+        <div class="card mb-2">
+            <div class="card-body p-2">
+                [[range $index, $item := .item.Data.expand.tag]]
+                <span v-on:click="toRoute('/tag/[[$item.name]]')" class="badge badge-[[$item.color]]-lighten cursor" style="margin: 2px;">
+                    [[$item.name]]
+                </span>
+                [[end]]
+            </div>
+        </div>
+        [[end]]
+        <p v-if="!empty(hitokoto.data)" class="ml-3 mb-2">
+            <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+            <span class="font-16 text-dark">一言</span>
+        </p>
+        <div v-if="!empty(hitokoto.data)" class="card mb-2">
+            <div class="card-body">
+                <div class="card-widgets">
+                    <a v-on:click="runHitokoto()" href="javascript:;"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#hitokoto" role="button" aria-expanded="true" aria-controls="hitokoto"><i class="mdi mdi-minus"></i></a>
+                    <a href="javascript:;" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                </div>
+                <h5 class="card-title mb-0"># {{hitokoto.data.from || '来自'}} #</h5>
+                <div id="hitokoto" class="pt-3 collapse show">
+                    <div>
+                        {{hitokoto.data.hitokoto || '内容'}}
+                    </div>
+                    <div v-show="!empty(hitokoto.data.from_who)" class="float-end">
+                        作者：{{hitokoto.data.from_who || '作者'}}
+                    </div>
+                </div>
+            </div>
+            <div v-if="hitokoto.load" class="card-disabled opacity-07">
+                <div class="card-portlets-loader"></div>
+            </div>
+        </div>
+    </div>
+</div>
+[[end]]

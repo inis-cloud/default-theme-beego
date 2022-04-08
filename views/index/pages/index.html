@@ -1,0 +1,184 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+[[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]][[end]]
+
+[[define "script"]]
+<script src="/assets/js/pages/index/index.js"></script>
+[[end]]
+
+[[define "content"]]
+<!-- 轮播 - 开始 -->
+<div class="row">
+    <div v-if="[[.banner.Data.count]] != 0" class="col-md-8" id="home-mark-banner">
+        <div class="card mb-lg-3 mb-2">
+            <div class="card-body p-2">
+                <div id="banner" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators z-index-99 mb-0">
+                        [[range $index, $item := .banner.Data.data]]
+                        <button type="qbutton" data-bs-target="#banner" data-bs-slide-to="[[$index]]" class="[[if eq $index 0]]active[[end]]" aria-current="[[if eq $index 0]]true[[end]]"></button>
+                        [[end]]
+                    </div>
+                    <div class="carousel-inner">
+                        [[range $index, $item := .banner.Data.data]]
+                        <div class="carousel-item [[if eq $index 0]]active[[end]]">
+                            <img src="[[$item.img]]" class="d-block w-100 banner-image-auto" alt="[[$item.description]]">
+                            <div class="carousel-caption z-index-9 hover-blur">
+                                [[if eq $item.opt.jump "inside"]]
+                                <a href="/article/[[$item.opt.article_id]].html" class="text-white">
+                                    <h5>[[$item.title]]</h5>
+                                    <p>[[$item.description]]</p>
+                                </a>
+                                [[else]]
+                                <a href="[[$item.url]]" target="_blank" class="text-white">
+                                    <h5>[[$item.title]]</h5>
+                                    <p>[[$item.description]]</p>
+                                </a>
+                                [[end]]
+                            </div>
+                        </div>
+                        [[end]]
+                    </div>
+                    <a class="carousel-control-prev" href="#banner" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </a>
+                    <a class="carousel-control-next" href="#banner" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div :class="[[.banner.Data.count]] != 0 ? 'col-lg-4' : 'col-lg-12'" id="home-mark-card">
+        <div class="card mb-lg-3 mb-2 first">
+            <div class="card-body py-2">
+                <h3 class="page-title display-7 animated fadeInUp">[[.config.Data.opt.basic.site.title]]</h3>
+                <p class="text-muted mb-0 flex align-items-center justify-content-space-between">
+                    <span v-if="hitokoto.load" class="flex-center">
+                        <span class="spinner-border text-light wh-16px me-2" role="status"></span>
+                        加载中 ...
+                    </span>
+                    <span v-else>
+                        <span class="text-muted">{{hitokoto.text || ''}}</span>
+                    </span>
+                    <i v-on:click="getHitokoto()" class="mdi mdi-refresh float-end font-16 cursor"></i>
+                </p>
+            </div>
+        </div>
+        <div v-if="[[.banner.Data.count]] != 0" class="card ribbon-box second">
+            <div class="card-body">
+                <div class="ribbon ribbon-primary float-start">
+                    <i class="mdi mdi-access-point me-1"></i>
+                    {{card.tips == 'placard' ? '公告' : '站长信息'}}
+                </div>
+                <h5 v-if="card.tips == 'placard'" class="text-primary float-end mt-0">{{card.title}}</h5>
+                <div v-else class="d-flex align-self-start">
+                    <div class="w-100 overflow-hidden text-end">
+                        <h5 class="mt-1 mb-0">[[.config.Data.opt.basic.site.nickname]]</h5>
+                        <p class="mb-1 mt-1 text-muted">[[.config.Data.opt.basic.site.present]]</p>
+                    </div>
+                    <img src="[[.config.Data.opt.basic.site.head_img]]" height="48" class="d-flex align-self-start rounded ms-2">
+                </div>
+                <div class="ribbon-content customize-scroll">
+                    <p v-if="card.tips == 'placard'" class="mb-0">
+                        {{card.content}}{{card.content}}
+                    </p>
+                    <p v-else class="mb-0">
+                        [[.config.Data.opt.basic.site.description]]
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 轮播 - 结束 -->
+<div class="row preview">
+    [[range $index, $item := .article.Data.data]]
+    <div class="col-lg-3 article">
+        <div class="card ribbon-box">
+            <div class="card-body p-2">
+                [[if $item.is_top]]
+                <div class="ribbon-two ribbon-two-danger"><span>置顶</span></div>
+                [[end]]
+                <a href="/article/[[$item.id]].html" class="hover-a-img position-relative">
+                    <img src="[[$item.expand.img_src]]" class="w-100" height="200">
+                    <div class="card-img-overlay">
+                        <div class="badge badge-secondary p-1">[[$item.views]]</div>
+                    </div>
+                    <p class="position-absolute bottom-0 end-0 start-0 mb-0 py-1 background-image flex justify-content-end">
+                        [[range $index, $item := $item.expand.tag]]
+                        <span class="badge badge-[[$item.color]]-lighten me-1">[[$item.name]]</span>
+                        [[end]]
+                    </p>
+                </a>
+                <div class="position-relative p-1 mt-2">
+                    <h5 class="mt-0 mb-1 font-16">
+                        <a href="/article/[[$item.id]].html" class="text-secondary">
+                            [[$item.title]]
+                        </a>
+                    </h5>
+                    <p class="mb-0">
+                        <span class="pr-2 text-nowrap">
+                            <a href="javascript:;" class="d-inline-block">
+                                <img src="[[$item.expand.author.head_img]]" class="rounded-circle avatar-xs">
+                            </a>
+                            [[$item.expand.author.nickname]]
+                        </span>
+                        <span class="pr-2 text-nowrap"> 评论：[[$item.expand.comments]]</span>
+                        <span class="text-nowrap"> 时间：{{nature([[$item.last_update_time]], 1)}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    [[end]]
+    <div v-for="(item, index) in article.data" :key="index" class="col-lg-3 article">
+        <div class="card ribbon-box">
+            <div class="card-body p-2">
+                <div v-if="item.is_top" class="ribbon-two ribbon-two-danger"><span>置顶</span></div>
+                <a :href="'article/' + item.id + '.html'" class="hover-a-img position-relative">
+                    <img :src="item.expand.img_src" class="w-100" height="200">
+                    <div class="card-img-overlay">
+                        <div class="badge badge-secondary p-1">{{item.views || 0}}</div>
+                    </div>
+                    <p class="position-absolute bottom-0 end-0 start-0 mb-0 py-1 background-image flex justify-content-end">
+                        <span v-for="(item, index) in item.expand.tag" :class="'badge badge-' + item.color + '-lighten me-1'">{{item.name}}</span>
+                    </p>
+                </a>
+                <div class="position-relative p-1 mt-2">
+                    <h5 class="mt-0 mb-1 font-16">{{item.title}}</h5>
+                    <p class="mb-0">
+                        <span class="pr-2 text-nowrap">
+                            <a href="javascript:void(0);" class="d-inline-block">
+                                <img :src="item.expand.author.head_img" class="rounded-circle avatar-xs">
+                            </a>
+                            {{item.expand.author.nickname}}
+                        </span>
+                        <span class="pr-2 text-nowrap"> 评论：{{item.expand.comments}}</span>
+                        <span class="text-nowrap"> 时间：{{nature(item.last_update_time, 1)}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mb-2">
+        <span v-if="!page.end" v-on:click="hasArticle()" class="cursor opacity-06 opacity-hover-10 see-more">
+            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+            <span class="font-11 text-muted">加载更多</span>
+        </span>
+        <span v-else class="cursor opacity-06 opacity-hover-10 see-more">
+            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+            <span class="font-11 text-muted">没有更多内容了</span>
+        </span>
+    </div>
+</div>
+[[end]]

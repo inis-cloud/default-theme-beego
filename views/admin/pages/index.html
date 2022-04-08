@@ -1,0 +1,18 @@
+[[template "admin/layout/base.html" .]]
+
+[[define "title"]]
+控制台 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]][[end]]
+
+[[define "script"]][[end]]
+
+[[define "content"]]
+[[.config.Data.opt]]
+[[end]]

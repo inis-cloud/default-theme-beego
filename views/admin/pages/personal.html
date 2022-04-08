@@ -1,0 +1,147 @@
+[[template "admin/layout/base.html" .]]
+
+[[define "title"]]
+个人信息 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]][[end]]
+
+[[define "script"]]
+[[assets_js "/assets/js/pages/admin/personal.js"]]
+[[end]]
+
+[[define "content"]]
+<div id="personal" class="container-xxl w-lg-90">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-white">
+                <div class="card-body profile-user-box pb-2">
+                    <div class="row mb-2">
+                        <div class="col-sm-8">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <div class="avatar-lg">
+                                        <input type="file" id="btn_file" style="display: none;">
+                                        <img :src="user.head_img" class="rounded-circle img-thumbnail pointer" height="100">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div>
+                                        <h4 class="my-1 text-muted">{{user.nickname}}</h4>
+                                        <p class="font-13 text-muted">{{user.description}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="text-center mt-sm-0 mt-3 text-sm-end">
+                                <button v-on:click="save()" type="button" class="btn btn-sm btn-info m-1">
+                                    <i class="mdi mdi-content-save me-1"></i>
+                                    保存信息
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">个人信息</h4>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">昵称</label>
+                        <div class="col-md-9">
+                            <input v-model="user.nickname" type="text" class="form-control custom-input ps-0" placeholder="您的称呼">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">性别</label>
+                        <div class="col-md-9 custom-select2">
+                            <select id="personal-select-sex" class="form-control select2" data-bs-toggle="select2"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">个人简介</label>
+                        <div class="col-md-9">
+                            <input v-model="user.description" type="text" class="form-control custom-input ps-0" placeholder="向大家介绍一下自己">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">头像地址</label>
+                        <div class="col-md-9">
+                            <input v-model="user.head_img" type="text" class="form-control custom-input ps-0" placeholder="您头像的外链地址">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">主页地址</label>
+                        <div class="col-md-9">
+                            <input v-model="user.address_url" type="text" class="form-control custom-input ps-0" placeholder="个人博客地址">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title mb-3">帐号安全</h4>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">登录帐号</label>
+                        <div class="col-md-9">
+                            <input v-model="user.account" type="text" class="form-control custom-input ps-0" placeholder="用于登录">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">邮箱地址</label>
+                        <div class="col-md-9">
+                            <input v-model="user.email" type="text" class="form-control custom-input ps-0" placeholder="用于登录或密码找回">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">手机号码</label>
+                        <div class="col-md-9">
+                            <input v-model="user.phone" type="text" class="form-control custom-input ps-0" placeholder="写了也没用">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">修改密码</label>
+                        <div class="col-md-9">
+                            <input v-model="password1" type="text" class="form-control custom-input ps-0" placeholder="请输入新密码">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">确认密码</label>
+                        <div class="col-md-9">
+                            <input v-model="password2" type="text" class="form-control custom-input ps-0" placeholder="请再次输入新密码">
+                        </div>
+                    </div>
+                    <div v-if="show.verify" class="form-group row mb-3">
+                        <label class="col-md-3 col-form-label">验证码</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <input v-model="edit.code" type="text" class="form-control custom-input ps-0" placeholder="此次操作需要提交验证码">
+                                <button v-on:click="check()" id="verify-code" class="input-group-text btn-info" type="button">获取验证码</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <teleport to="body">
+        <div class="customize-save">
+            <button v-on:click="save()" type="button" class="btn btn-icon">
+                <i class="mdi mdi-content-save-outline text-info font-20 flex-center"></i>
+            </button>
+        </div>
+    </teleport>
+</div>
+[[end]]

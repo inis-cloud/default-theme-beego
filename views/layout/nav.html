@@ -1,0 +1,166 @@
+<div id="nav" class="navbar-custom topnav-navbar fixed-top">
+
+    <div class="container-fluid">
+
+        <a href="/" class="topnav-logo">
+            <span class="topnav-logo-lg">
+                <img src="/assets/images/logo.png" height="32">
+            </span>
+            <span class="topnav-logo-sm">
+                <img src="/assets/images/logo_sm.png" height="32">
+            </span>
+        </a>
+
+        <ul class="list-unstyled topbar-menu float-end mb-0">
+
+            <li v-on:click="next()" class="notification-list">
+                <a class="nav-link dropdown-toggle arrow-none nav-item" href="javascript:;">
+                    <!-- 图标 -->
+                    <div id="lottie-beil" class="wh-32px svg-info"></div>
+                    <!-- 点点 -->
+                    <span class="bg-danger dots"></span>
+                </a>
+            </li>
+
+            <li v-on:click="next()" class="notification-list">
+                <a class="nav-link dropdown-toggle arrow-none nav-item" href="javascript:;">
+                    <!-- 图标 -->
+                    <div id="lottie-email" class="wh-27px svg-info"></div>
+                    <!-- 点点 -->
+                    <span class="bg-danger dots"></span>
+                </a>
+            </li>
+
+            <li class="notification-list">
+                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                    <i class="dripicons-gear noti-icon mdi-spin text-info"></i>
+                </a>
+            </li>
+
+            <li v-if="!user.isLogin" class="notification-list d-none d-md-block">
+                <a data-bs-toggle="modal" data-bs-target="#login-modal" class="nav-link nav-item" href="javascript:;">
+                    <img src="/assets/svg/user.svg" width="30" height="30">
+                </a>
+            </li>
+
+            <li v-else class="dropdown notification-list">
+                <a class="nav-link dropdown-toggle nav-user arrow-none mx-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="account-user-avatar">
+                        <img :src="user.info.head_img" class="rounded-circle">
+                    </span>
+                    <span>
+                        <span class="account-user-name">{{user.info.nickname}}</span>
+                        <span class="account-position">{{user.info.email}}</span>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown py-0" aria-labelledby="topbar-userdrop">
+
+                    <div class="dropdown-header noti-title bg-info">
+                        <h6 class="text-white m-0">{{user.info.nickname}}，您好！</h6>
+                    </div>
+
+                    <a v-if="false" href="/admin" class="dropdown-item notify-item py-2">
+                        <div class="d-flex align-items-start">
+                            <svg t="1648894422052" class="icon me-1" style="margin-left: -3px;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16268" width="20" height="20">
+                                <path d="M-277.77266178 497.3745802C-277.77266178 61.19776443 75.82318423-292.39808159 512-292.39808159c436.17681577 0 789.77266178 353.59584601 789.77266178 789.77266179 0 436.17681577-353.59584601 789.77266178-789.77266178 789.77266178C75.82318423 1287.14724198-277.77266178 933.55139597-277.77266178 497.3745802z" fill="#fff0" p-id="16269"></path>
+                                <path d="M161.978182 344.771491C161.978182 285.975273 209.67424 238.312727 268.507695 238.312727H755.488582C814.32576 238.312727 862.021818 285.975273 862.021818 344.771491v207.853382c0 58.796218-47.696058 106.458764-106.529513 106.458763H268.507695C209.67424 659.083636 161.978182 611.421091 161.978182 552.624873V344.771491z" fill="#4CA7FC" p-id="16270"></path><path d="M344.436364 577.163636V316.509091h74.472727v260.654545H344.436364zM608.814545 577.163636V316.509091h74.472728v260.654545h-74.472728z" fill="#FFFFFF" p-id="16271"></path>
+                                <path d="M547.508596 154.169716l104.764509-104.760785 39.455651 39.455651L586.967971 193.629091l-39.459375-39.459375zM479.797993 154.169716L375.033484 49.412655 335.577833 88.864582 440.338618 193.629091l39.459375-39.459375z" fill="#4CA7FC" p-id="16272"></path><path d="M538.385687 620.819549c22.885469-17.866007 56.446604-3.012422 58.602589 25.938851a36.346415 36.346415 0 0 0 31.799855 33.367505c28.817222 3.544902 42.043578 37.780015 23.097716 59.779259a36.342691 36.342691 0 0 0-1.109643 46.08c17.869731 22.881745 3.012422 56.44288-25.938851 58.602589a36.335244 36.335244 0 0 0-33.363782 31.799854c-3.548625 28.813498-37.783738 42.039855-59.782982 23.093993a36.335244 36.335244 0 0 0-46.076276-1.10592c-22.885469 17.866007-56.446604 3.012422-58.602589-25.942575a36.342691 36.342691 0 0 0-31.799855-33.363781c-28.817222-3.544902-42.039855-37.783738-23.097716-59.779259a36.342691 36.342691 0 0 0 1.109643-46.08c-17.869731-22.881745-3.016145-56.44288 25.938851-58.602589a36.335244 36.335244 0 0 0 33.363782-31.799854c3.548625-28.813498 37.783738-42.039855 59.782982-23.093993a36.335244 36.335244 0 0 0 46.076276 1.10592z" fill="#FFFFFF" p-id="16273"></path>
+                                <path d="M704.765207 759.595753c0 106.462487-86.30272 192.768931-192.765207 192.768931s-192.765207-86.306444-192.765207-192.768931c0-106.458764 86.30272-192.765207 192.765207-192.765208s192.765207 86.306444 192.765207 192.765208z" fill="#FFFFFF" p-id="16274"></path><path d="M590.985775 643.857687l0.565992 7.585048a40.956276 40.956276 0 0 0 35.84 37.605003l7.547811 0.930909c20.669905 2.543244 30.154007 27.100625 16.566458 42.877673l-4.963607 5.764189a40.96 40.96 0 0 0-1.247418 51.933556l4.680611 5.995055c12.816756 16.413789 2.159709 40.487098-18.607011 42.032407l-7.581324 0.565993a40.963724 40.963724 0 0 0-37.608727 35.843724l-0.927185 7.547811c-2.543244 20.666182-27.100625 30.154007-42.881397 16.566458l-5.760465-4.963608a40.96 40.96 0 0 0-51.93728-1.247418l-5.991331 4.680611c-16.413789 12.813033-40.487098 2.159709-42.036131-18.607011l-0.565993-7.585047a40.956276 40.956276 0 0 0-35.84-37.605004l-7.547811-0.930909c-20.666182-2.543244-30.154007-27.100625-16.566458-42.877672l4.963607-5.760466a40.96 40.96 0 0 0 1.247419-51.93728l-4.680611-5.995054c-12.816756-16.413789-2.159709-40.483375 18.607011-42.032408l7.581323-0.565992a40.963724 40.963724 0 0 0 37.608727-35.843724l0.927186-7.547811c2.546967-20.666182 27.100625-30.154007 42.881396-16.562735l5.760466 4.959884a40.96 40.96 0 0 0 51.93728 1.247418l5.991331-4.676887c16.413789-12.816756 40.487098-2.163433 42.036131 18.603287z" fill="#4CA7FC" p-id="16275"></path>
+                                <path d="M597.643636 759.621818c0 47.301353-40.010473 85.643636-89.367272 85.643637s-89.367273-38.342284-89.367273-85.643637 40.010473-85.643636 89.367273-85.643636 89.367273 38.342284 89.367272 85.643636z" fill="#FFFFFF" p-id="16276"></path>
+                            </svg>
+                            <span class="font-13">控制台</span>
+                        </div>
+                    </a>
+
+                    <a href="/admin/personal.html" class="dropdown-item notify-item py-2">
+                        <div class="d-flex align-items-start">
+                            <svg t="1648894989791" class="icon me-1" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="21326" width="14" height="14"><path d="M512 104.106667c-149.674667 0-287.943111 77.653333-362.780444 203.776a398.08 398.08 0 0 0 0 407.608889c74.808889 126.094222 213.105778 203.776 362.780444 203.776 231.367111 0 418.901333-182.499556 418.901333-407.608889C930.901333 286.606222 743.367111 104.106667 512 104.106667zM0 511.658667C0 236.544 229.262222 13.511111 512 13.511111S1024 236.544 1024 511.715556c0 275.114667-229.262222 498.147556-512 498.147555S0 786.801778 0 511.715556z" p-id="21327" fill="#50b5ff"></path><path d="M526.222222 685.340444c-106.012444 0-180.167111 34.929778-226.076444 66.816a45.767111 45.767111 0 0 1-46.08 4.295112 45.966222 45.966222 0 0 1-6.200889-79.843556c58.794667-40.931556 150.869333-83.228444 278.357333-83.228444 127.488 0 219.591111 42.353778 278.357334 83.228444a46.023111 46.023111 0 0 1-6.200889 79.843556 45.767111 45.767111 0 0 1-46.08-4.295112c-45.852444-31.857778-120.007111-66.844444-226.076445-66.844444z m0-229.888a91.847111 91.847111 0 0 1-91.704889-91.960888A91.847111 91.847111 0 0 1 526.222222 271.530667a91.847111 91.847111 0 0 1 91.704889 91.960889 91.847111 91.847111 0 0 1-91.704889 91.960888z m-183.438222-91.960888c0 101.546667 82.119111 183.921778 183.438222 183.921777s183.438222-82.346667 183.438222-183.921777-82.119111-183.921778-183.438222-183.921778-183.438222 82.346667-183.438222 183.921778z" p-id="21328" fill="#50b5ff"></path></svg>
+                            <span class="font-13">个人资料</span>
+                        </div>
+                    </a>
+
+                    <a v-on:click="logout()" href="javascript:;" class="dropdown-item notify-item py-2">
+                        <div class="d-flex align-items-start">
+                            <svg t="1648894679911" class="icon me-1" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="17633" width="15" height="15"><path d="M689.664 172.992l0 133.781333c89.28 58.176 148.394667 158.698667 148.394667 273.216 0 180.032-145.984 325.994667-326.058667 325.994667-180.032 0-326.016-145.962667-326.016-325.994667 0-101.781333 46.634667-192.618667 119.722667-252.437333L305.706667 186.773333C164.373333 261.098667 67.968 409.216 67.968 579.946667 67.968 825.173333 266.794667 1024 512.042667 1024c245.205333 0 443.989333-198.826667 443.989333-444.053333C956.010667 397.888 846.464 241.536 689.664 172.992z" p-id="17634" fill="#50b5ff"></path><path d="M577.344 459.989333c0 28.693333-29.248 51.989333-65.344 51.989333l0 0c-36.053333 0-65.322667-23.274667-65.322667-51.989333L446.677333 51.989333C446.677333 23.274667 475.946667 0 512 0l0 0c36.096 0 65.344 23.274667 65.344 51.989333L577.344 459.989333z" p-id="17635" fill="#50b5ff"></path></svg>
+                            <span class="font-13">退出登录</span>
+                        </div>
+                    </a>
+
+                </div>
+            </li>
+
+        </ul>
+        <a class="button-menu-mobile disable-btn">
+            <div class="lines">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </a>
+        <div class="app-search dropdown">
+            <form>
+                <div class="input-group">
+                    <input v-model="searchValue" type="text" class="form-control" :placeholder="search.placeholder" id="top-search">
+                    <span class="mdi mdi-magnify search-icon"></span>
+                    <button v-on:click="toRoute()" class="input-group-text btn-info" type="button">搜索</button>
+                </div>
+            </form>
+            <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
+
+                <div v-if="!empty(search.data)" class="dropdown-header noti-title">
+                    <h5 class="text-overflow my-0">最新文章</h5>
+                </div>
+
+                <a v-if="!empty(search.data)" v-for="(item, index) in search.data" :key="index" :href="'/article/' + item.id + '.html'" class="dropdown-item notify-item">
+                    <i class="mdi mdi-map-marker-radius-outline font-16 me-1"></i>
+                    <span>{{item.title}}</span>
+                </a>
+                <div v-else class="flex-center p-2">
+                    <span class="font-13">搜索内容无结果</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <teleport to="body">
+    <!--- 模态框 - 开始 -->
+    <div id="login-modal" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-header bg-info">
+                <div class="my-3 w-100">
+                    <a href="/" class="text-success flex-center">
+                        <img src="/assets/images/logo.png" height="32">
+                    </a>
+                </div>
+            </div>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="ps-3 pe-3">
+                        <div class="mb-3">
+                            <label class="form-label">账号：</label>
+                            <input v-model="account" class="form-control customize-input" type="text" required="" placeholder="账号 | 邮箱">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">密码：</label>
+                            <input v-model="password" v-on:keyup.enter="login()" class="form-control customize-input" type="password" required="" placeholder="密码">
+                        </div>
+
+                        <div class="mb-3 text-center d-grid">
+                            <button v-on:click="login()" class="btn rounded-pill btn-info btn-block" type="button">
+                                <div v-if="load.login" class="flex-center">
+                                    <div class="spinner-border text-primary me-2 wh-20px" role="status"></div>
+                                    <span>登录中 ...</span>
+                                </div>
+                                <span v-else>登录</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--- 模态框 - 结束 -->
+    </teleport>
+</div>

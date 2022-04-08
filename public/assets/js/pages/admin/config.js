@@ -1,0 +1,74 @@
+(()=>{
+    const app = Vue.createApp({
+        data(){
+            return {
+                config: {
+                    basic: {site: {copy:{}},style:{background:{},color:{},font:{}}},
+                    developer: {code:{html:{}},footer:{},menu:{}},
+                    other: {copy:{},help:{},images:{logo:{day:{},night:{}}},module:{}}
+                },
+            }
+        },
+        mounted(){
+            this.getConfig();
+        },
+        methods: {
+            // 获取主题配置
+            getConfig() {
+                Get('options',{
+                    key:'config:default-theme-beego'
+                }).then(res=>{
+                    if (res.code == 204) {
+                        this.initConfig()
+                    } else {
+                        this.config = res.data.opt
+                    }
+                })
+            },
+            // 初始化主题配置
+            async initConfig(){
+                const defaultConfig = await inisHelper.fetch.get('/assets/json/config.json')
+                await Post('options',{
+                    keys: 'config:default-theme-beego',
+                    opt: defaultConfig
+                },{
+                    headers: {
+                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                    },
+                }).then(res=>{
+                    if (res.code == 200) {
+                        this.config = defaultConfig
+                        inisHelper.set.session('theme-config-beego', this.config)
+                        Notify('初始化主题配置成功', 'success')
+                    } else {
+                        Notify('初始化主题配置失败', 'error')
+                    }
+                })
+            },
+            // 保存主题配置
+            saveConfig(){
+                Post('options',{
+                    keys: 'config:default-theme-beego',
+                    opt: this.config
+                },{
+                    headers: {
+                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                    },
+                }).then(res=>{
+                    if (res.code == 200) {
+                        inisHelper.set.session('theme-config-beego', this.config)
+                        Notify('保存主题配置成功', 'success')
+                    } else {
+                        Notify(res.msg, 'error')
+                    }
+                })
+            },
+        },
+        computed: {
+
+        },
+        watch: {
+
+        }
+    }).mount('#app')
+})()
