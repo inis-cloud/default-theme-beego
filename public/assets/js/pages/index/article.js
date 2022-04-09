@@ -68,7 +68,9 @@
                     for (let item of node.childNodes) fds(item)
                 }
                 fds(document.querySelector('.markdown.preview'))
-                this.directory = inisHelper.array.to.tree(map)
+                if (!inisHelper.is.empty(map)) {
+                    this.directory = inisHelper.array.to.tree(map)
+                }
             },
             // 定位
             toTarget: id => $("html,body").animate({scrollTop:$(`#${id}`).offset().top-200},1),

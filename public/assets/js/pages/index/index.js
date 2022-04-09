@@ -29,7 +29,10 @@
             this.getHitokoto()
             this.initArticle()
             this.hasPlacard()
-            window.onresize = this.cardAutoHigth()
+            window.onresize = () => {
+                this.cardAutoHigth()
+                this.scale()
+            }
         },
         methods: {
             // 初始化文章缓存
@@ -125,9 +128,20 @@
                 }
                 scroll.style.height = height.banner - height.markCard - height.second + height.scroll - 24 + 'px'
             },
+            // 图片等比例缩放
+            scale(){
+                // 比例
+                const scale = 16 / 9
+                const images = document.querySelectorAll(".preview .article .img-cover")
+                images.forEach(item=>{
+                    const height = item.offsetWidth / scale
+                    item.setAttribute('height', height)
+                })
+            }
         },
         updated(){
             this.cardAutoHigth()
+            this.scale()
         },
     }).mount('#app')
 

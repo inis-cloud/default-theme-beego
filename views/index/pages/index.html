@@ -18,7 +18,7 @@
 [[define "content"]]
 <!-- 轮播 - 开始 -->
 <div class="row">
-    <div v-if="[[.banner.Data.count]] != 0" class="col-md-8" id="home-mark-banner">
+    <div v-if="[[.banner.Data.count]] != 0" class="col-lg-8" id="home-mark-banner">
         <div class="card mb-lg-3 mb-2">
             <div class="card-body p-2">
                 <div id="banner" class="carousel slide" data-bs-ride="carousel">
@@ -109,7 +109,7 @@
                 <div class="ribbon-two ribbon-two-danger"><span>置顶</span></div>
                 [[end]]
                 <a href="/article/[[$item.id]].html" class="hover-a-img position-relative">
-                    <img src="[[$item.expand.img_src]]" class="w-100" height="200">
+                    <img src="[[$item.expand.img_src]]" class="w-100 img-cover" height="200">
                     <div class="card-img-overlay">
                         <div class="badge badge-secondary p-1">[[$item.views]]</div>
                     </div>
@@ -133,7 +133,7 @@
                             [[$item.expand.author.nickname]]
                         </span>
                         <span class="pr-2 text-nowrap"> 评论：[[$item.expand.comments]]</span>
-                        <span class="text-nowrap"> 时间：{{nature([[$item.last_update_time]], 1)}}</span>
+                        <span class="text-nowrap"> 时间：{{nature('[[$item.last_update_time]]', 1)}}</span>
                     </p>
                 </div>
             </div>
@@ -145,7 +145,7 @@
             <div class="card-body p-2">
                 <div v-if="item.is_top" class="ribbon-two ribbon-two-danger"><span>置顶</span></div>
                 <a :href="'article/' + item.id + '.html'" class="hover-a-img position-relative">
-                    <img :src="item.expand.img_src" class="w-100" height="200">
+                    <img :src="item.expand.img_src" class="w-100 img-cover" height="200">
                     <div class="card-img-overlay">
                         <div class="badge badge-secondary p-1">{{item.views || 0}}</div>
                     </div>

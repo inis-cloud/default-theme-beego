@@ -1,0 +1,24 @@
+body[data-theme-mode=dark] .alert{
+    background-color: #464f5b!important;
+}
+body[data-theme-mode=dark] .markdown table thead tr {
+    background-color: #4b535c!important;
+}
+body[data-theme-mode=dark] .markdown table tbody tr {
+    background-color: #37404a!important;
+}
+body[data-theme-mode=dark] .markdown table tbody tr:nth-child(even) {
+    background-color: #3a444e!important;
+}
+body[data-theme-mode=dark] span.bg-dark.reply {
+    background-color: #4b535c !important;
+}
+body[data-theme-mode=dark] .markdown blockquote {
+    background-color: #3a444e!important;
+}
+body[data-theme-mode=dark] .markdown h1, body[data-theme-mode=dark] .markdown h2, body[data-theme-mode=dark] .markdown h3, body[data-theme-mode=dark] .markdown h4, body[data-theme-mode=dark] .markdown h5, body[data-theme-mode=dark] .markdown h6 {
+    color: unset!important;
+}
+body[data-theme-mode=dark] #personal .bg-white {
+    background-color: #37404a!important;
+}

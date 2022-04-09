@@ -53,7 +53,7 @@ const directives = {
                 if (result) $(item).find(".copy").html("<img class='w-auto mr-1' src='/assets/svg/tag.svg' />已复制</span>")
             })
         })
-    }
+    },
 }
 
 // 自定义组件
@@ -247,7 +247,7 @@ const components = {
                     mounted: (el) => directives.highlight(el)
                 }
             },
-            template: `<div v-highlight class="media mt-2 row mackdown comments">
+            template: `<div v-highlight class="media mt-2 row markdown comments">
                 <!-- 评论 - 开始 -->
                 <div v-for="(item, index) in comments.data" :key="index" class="card-body inbox-widget col-md-12 py-0">
                     <div class="inbox-item">
@@ -293,7 +293,7 @@ const components = {
                 </div>
                 <!-- 评论 - 结束 -->
             </div>
-            <div v-if="page.show" class="flex-center">
+            <div v-if="page.show && !empty(page.list)" class="flex-center">
                 <div class="btn-group">
                     <button v-on:click="hasComment(1)" type="button" class="btn btn-light btn-sm"><i class="mdi mdi-chevron-left"></i></button>
                     <button v-for="(item, index) in page.list" :key="index" v-on:click="hasComment(item)" :class="(item == page.code) ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-light'">
