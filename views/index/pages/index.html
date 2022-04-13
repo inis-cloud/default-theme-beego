@@ -120,7 +120,7 @@
                     </p>
                 </a>
                 <div class="position-relative p-1 mt-2">
-                    <h5 class="mt-0 mb-1 font-16">
+                    <h5 class="mt-0 mb-1 font-16 line-1">
                         <a href="/article/[[$item.id]].html" class="text-secondary">
                             [[$item.title]]
                         </a>
@@ -154,7 +154,11 @@
                     </p>
                 </a>
                 <div class="position-relative p-1 mt-2">
-                    <h5 class="mt-0 mb-1 font-16">{{item.title}}</h5>
+                    <h5 class="mt-0 mb-1 font-16 line-1">
+                        <a :href="'/article/' + item.id + '.html'" class="text-secondary">
+                            {{item.title}}
+                        </a>
+                    </h5>
                     <p class="mb-0">
                         <span class="pr-2 text-nowrap">
                             <a href="javascript:void(0);" class="d-inline-block">

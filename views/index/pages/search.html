@@ -187,7 +187,7 @@
           </div>
         </div>
         <div id="search-comments" class="tab-pane">
-          <div class="media row markdown comments" v-highlight>
+          <div class="media row markdown comments">
             <div v-for="(item, index) in search.result.comments.data" :key="index" class="inbox-widget col-md-12">
               <div class="inbox-item">
                 <div class="inbox-item-img">
@@ -199,7 +199,7 @@
                   <a :href="(item.url == null) ? item.url : '//'+item.url" target="_blank" class="text-dark">{{ item.nickname }}</a>
                   <span class="text-muted font-13 mx-2">{{ nature(item.create_time) }}</span>
                 </h5>
-                <p v-html="item.expand.html" class="text-dark mb-0"></p>
+                <p v-html="item.expand.html" v-highlight class="text-dark mb-0"></p>
               </div>
             </div>
           </div>

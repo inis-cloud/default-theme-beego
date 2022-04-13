@@ -74,6 +74,10 @@ const components = {
                     is: {
                         load : false,       // 加载中
                         login: false,       // 已登录
+                    },
+                    emoji: {},
+                    show: {
+                        vditor: false,      // vditor 显示
                     }
                 }
             },
@@ -84,55 +88,231 @@ const components = {
                 if (!inisHelper.is.empty(this.pid)) this.comment.pid = this.pid
             },
             methods:{
-                send(){
-                    if (inisHelper.is.empty(this.comment.content))       Notify('您可以说点什么哟~','warning')
-                    else if (inisHelper.is.empty(this.comment.nickname)) Notify('你的名字为什么不愿意告诉我呢，好神秘啊~','warning')
-                    else if (inisHelper.is.empty(this.comment.email))    Notify('不写邮箱，是在拒绝我的回应吗？过分~','warning')
-                    else if (!inisHelper.is.email(this.comment.email))   Notify('给了个假邮箱，太坏了，哼~','warning')
-                    else {
-                        // 加载中
-                        this.is.load = true
-                        // 发送评论
-                        Post('comments', this.comment).then(res=>{
-                            if (res.code == 200) {
-                                Notify('爱你哟！♥','success')
-                                this.$emit('finish')
-                                // 恢复默认数据
-                                this.comment = {...this.comment, ...{pid:0,content:''}}
-                            } else Notify(res.msg,'error')
-                            this.is.load = false
-                        })
+                hasEmoji(el, config = {}){
+                    const cache = 'emoji'
+                    // 本地存在缓存
+                    if (inisHelper.has.session(cache)) {
+                        this.emoji = inisHelper.get.session(cache)
+                        setTimeout(() => {
+                            this.initVditor(el, config)
+                        }, 200)
                     }
+                    // 不存在缓存，从服务器端获取
+                    else this.initEmoji(el, config)
+                },
+                initEmoji(el, config = {}){
+                    const cache = 'emoji'
+                    Get('emoji').then((res) => {
+                        if (res.code == 200) {
+                            this.emoji = res.data
+                            inisHelper.set.session(cache, res.data)
+                            this.initVditor(el, config)
+                        }
+                    }).catch(err=>{
+                        this.initEmoji(el, config)
+                    })
+                },
+                // 初始化编辑器
+                initVditor(el, config = {}){
+                    let options = {
+                        height: 200,
+                        minHeight: 200,
+                        placeholder: '说点什么吧 (支持Mackdown语法！) * ... ... ',
+                        mode: 'wysiwyg',
+                        icon: 'material',           // 图标风格
+                        toolbarConfig: {
+                            pin: true,              // 固定工具栏
+                        },
+                        cache: {
+                            enable: false,          // 关闭缓存
+                        },
+                        counter: {
+                            enable: true,           // 启用计数器
+                        },
+                        resize: {
+                            enable: true,           // 支持主窗口大小拖拽
+                        },
+                        preview: {
+                            hljs: {
+                                enable: true,       // 启用代码高亮
+                                lineNumber: true,   // 启用行号
+                            },
+                            math: {
+                                engine: 'MathJax',
+                            }
+                        },
+                        // 编辑器异步渲染完成后的回调方法
+                        after: () => {
+                            this.show.vditor = true
+                        },
+                        // 快捷键
+                        ctrlEnter: () => {
+                            this.check()
+                        },
+                        hint: {
+                            emoji: this.emoji,
+                        },
+                        upload: {
+                            accept: 'image/*, video/*',
+                            multiple: false,
+                            // 上传失败自定义方法
+                            handler: (files) => {
+
+                                // window.vditor.tip('上传中...', 2000)
+                                //
+                                // let params = new FormData
+                                // params.append('file', ...files)
+                                // params.append('mode', 'file')
+                                //
+                                // axios.post('/admin/handle/upload', params, {
+                                //     headers: {
+                                //         "Content-Type": "multipart/form-data"
+                                //     }
+                                // }).then((res) => {
+                                //     if (res.data.code == 200) {
+                                //
+                                //         let result = res.data.data
+                                //         if (this.checkFile(result) == 'image') {
+                                //             window.vditor.insertValue(`![](${result})`)
+                                //         } else if (this.checkFile(result) == 'video') {
+                                //             window.vditor.insertValue(`<video src="${result}" controls>Not Support</video>`)
+                                //         } else {
+                                //             window.vditor.insertValue(`${result}`)
+                                //         }
+                                //
+                                //         window.vditor.tip('上传完成！', 2000)
+                                //
+                                //     } else {
+                                //         window.vditor.tip(res.data.msg, 2000)
+                                //     }
+                                // })
+                            },
+                            filename: (name) => {
+                                return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, "")
+                                    .replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, "")
+                                    .replace("/\\s/g", "");
+                            },
+                        },
+                        toolbar: [
+                            "emoji","headings","bold","italic","strike","link",
+                            "|",
+                            "list","ordered-list","check","outdent","indent",
+                            "|",
+                            "quote","line","code","inline-code","insert-before","insert-after",
+                            "|","table",
+                            {
+                                hotkey: "",
+                                name: "album",
+                                tipPosition: "s",
+                                tip: "插入相册",
+                                className: "right",
+                                icon: `<img src='/assets/svg/album.svg' height="16">`,
+                                click: () => {
+                                    window.vditor.insertValue('[album]\n支持Markdown格式和HTML格式的图片\n[/album]')
+                                }
+                            },
+                            "|",
+                            "undo","redo",
+                        ],
+                    }
+                    // 对象深度合并
+                    config = inisHelper.object.deep.merge(options, config)
+                    window.vditor = new Vditor(el, config)
+                },
+                // 前置校验
+                check(){
+                    if (inisHelper.is.empty(window.vditor.getValue())) Notify('您可以说点什么哟~','warning')
+                    else {
+                        // 登录后评论
+                        if (this.userInfo.login) this.send()
+                        // 未登录评论
+                        else {
+                            if (inisHelper.is.empty(this.comment.nickname))    Notify('你的名字为什么不愿意告诉我呢，好神秘啊~','warning')
+                            else if (inisHelper.is.empty(this.comment.email))  Notify('不写邮箱，是在拒绝我的回应吗？过分~','warning')
+                            else if (!inisHelper.is.email(this.comment.email)) Notify('给了个假邮箱，太坏了，哼~','warning')
+                            else this.send()
+                        }
+                    }
+                },
+                // 发送评论
+                send(){
+                    // 加载中
+                    this.is.load = true
+                    this.comment.content = inisHelper.html2md(window.vditor.getHTML())
+                    // 发送评论
+                    Post('comments', this.comment,{
+                        headers: this.userInfo.login ? {
+                            'login-token': this.userInfo.token
+                        } : {}
+                    }).then(res=>{
+                        if (res.code == 200) {
+                            Notify('爱你哟！♥','success')
+                            this.$emit('finish')
+                            // 恢复默认数据
+                            window.vditor.setValue('')
+                            this.comment = {...this.comment, ...{pid:0,content:''}}
+                        } else Notify(res.msg,'error')
+                        this.is.load = false
+                    })
                 },
                 // 取消评论
                 cancel(){
                     this.$emit('changeBoxId',0)
                 },
-                empty: (data) => inisHelper.is.empty(data)
+                empty: (data) => inisHelper.is.empty(data),
             },
-            template: `<textarea v-model.trim="comment.content" :placeholder="!empty(placeholder) ? placeholder : '说点什么吧 (支持Mackdown语法！) * ... ... '" class="form-control customize-textarea un-b-border" rows="3"></textarea>
-                <div class="row">
-                    <div class="col-md-4">
+            directives: {
+                vditor: {
+                    // 初始化指令
+                    mounted(el, binding) {
+                        binding.instance.hasEmoji(el, {
+                            height: inisHelper.is.mobile() ? 300 : 200,
+                            minHeight: inisHelper.is.mobile() ? 300 : 200,
+                        })
+                    },
+                    // 注销指令
+                    unmounted(el, binding) {
+                        window.vditor.destroy()
+                    },
+                }
+            },
+            computed: {
+                userInfo(){
+                    let result = {
+                        data : {},
+                        token: null,
+                        login: false
+                    }
+                    if (inisHelper.has.cookie('LOGIN-TOKEN')) {
+                        result = {
+                            data : inisHelper.get.session('USER-INFO'),
+                            token: inisHelper.get.cookie('LOGIN-TOKEN'),
+                            login: true
+                        }
+                    } else result.login = false
+                    return result
+                }
+            },
+            template: `<div v-if="!show.vditor" class="flex-center">
+                    <div class="spinner-border text-light m-2 wh-16px" role="status"></div>
+                    Vditor 编辑器加载中 ... 
+                </div>
+                <div v-show="show.vditor" v-vditor></div>
+                <div v-if="show.vditor && !userInfo.login" class="row">
+                    <div class="col-lg-4">
                         <input type="text" class="form-control customize-input" placeholder="昵称*：" v-model.trim="comment.nickname">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-lg-4">
                         <input type="text" class="form-control customize-input" placeholder="邮箱*：" v-model.trim="comment.email">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-lg-4">
                         <input type="text" class="form-control customize-input" placeholder="网址：" v-model.trim="comment.url">
                     </div>
                 </div>
-                <div class="row pt-2">
-                    <!-- 表情预留区域 -->
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-icon btn-light me-1"> <i class="mdi mdi-heart-outline"></i></button>
-                        <button type="button" class="btn btn-icon btn-light me-1"> <i class="mdi mdi-heart-outline"></i></button>
-                        <button type="button" class="btn btn-icon btn-light me-1"> <i class="mdi mdi-heart-outline"></i></button>
-                        <button type="button" class="btn btn-icon btn-light me-1"> <i class="mdi mdi-heart-outline"></i></button>
-                    </div>
+                <div v-if="show.vditor" class="row pt-2">
                     <!-- 发表评论 -->
-                    <div class="col-md-6">
-                        <button v-if="!is.load" v-on:click="send()" type="button" class="btn btn-outline-info btn-sm float-end">
+                    <div class="col-lg-12">
+                        <button v-if="!is.load" v-on:click="check()" type="button" class="btn btn-outline-info btn-sm float-end">
                             <i class="mdi mdi-star-outline mdi-spin"></i> 发表评论
                         </button>
                         <button v-else type="button" class="btn btn-outline-info btn-sm float-end" disabled>
@@ -249,7 +429,7 @@ const components = {
             },
             template: `<div v-highlight class="media mt-2 row markdown comments">
                 <!-- 评论 - 开始 -->
-                <div v-for="(item, index) in comments.data" :key="index" class="card-body inbox-widget col-md-12 py-0">
+                <div v-for="(item, index) in comments.data" :key="index" class="card-body inbox-widget col-lg-12 py-0 px-lg-3 px-0">
                     <div class="inbox-item">
                         <div class="inbox-item-img w-auto">
                             <a :href="item.url">
@@ -264,7 +444,7 @@ const components = {
                         <p v-html="item.expand.html" class="text-muted mb-0"></p>
                     </div>
                     <div v-if="box.id == item.id" class="card">
-                        <div class="card-body">
+                        <div class="card-body p-lg-3 p-2">
                             <comment-box :pid="item.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:changeBoxId="setBoxId" v-on:finish="finish"></comment-box>
                         </div>
                     </div>
@@ -284,7 +464,7 @@ const components = {
                         <p class="inbox-item-text">{{reply.create_time}}</p>
                         <p v-html="reply.expand.html" class="text-muted mb-0"></p>
                         <div v-if="box.id == reply.id" class="card">
-                            <div class="card-body">
+                            <div class="card-body p-lg-3 p-2">
                                 <comment-box :pid="reply.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:changeBoxId="setBoxId" v-on:finish="finish"></comment-box>
                             </div>
                         </div>

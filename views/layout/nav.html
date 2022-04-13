@@ -22,6 +22,12 @@
                 </a>
             </li>
 
+            <li class="notification-list d-lg-none d-block">
+                <a class="nav-link" href="/search">
+                    <i class="mdi mdi-magnify noti-icon text-info font-28" style="line-height: 56px!important"></i>
+                </a>
+            </li>
+
             <li v-on:click="next()" class="notification-list">
                 <a class="nav-link dropdown-toggle arrow-none nav-item" href="javascript:;">
                     <!-- 图标 -->
@@ -37,7 +43,7 @@
                 </a>
             </li>
 
-            <li v-if="!user.isLogin" class="notification-list d-none d-md-block">
+            <li v-if="!user.isLogin" class="notification-list">
                 <a data-bs-toggle="modal" data-bs-target="#login-modal" class="nav-link nav-item" href="javascript:;">
                     <img src="/assets/svg/user.svg" width="30" height="30">
                 </a>

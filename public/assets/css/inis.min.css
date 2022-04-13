@@ -31,13 +31,15 @@
 }
 
 /* 页面滚动条 */
-html{scrollbar-width: thin;scrollbar-color: rgba(0,0,0,.2) transparent;}
-html::-webkit-scrollbar{width:4px;height:10px;background-color:rgba(0,0,0,0);}
-html::-webkit-scrollbar-thumb{border-radius:6px;background-color:rgba(0,0,0,.2);transition:all .4s ease;-moz-transition:all .4s ease;-webkit-transition:all .4s ease;-o-transition:all .4s ease}
-html::-webkit-scrollbar-track{background-color:rgba(0,0,0,.1)}
+html, .vditor-reset{scrollbar-width: thin;scrollbar-color: rgba(0,0,0,.2) transparent;}
+html::-webkit-scrollbar, .vditor-reset::-webkit-scrollbar{width:4px;height:10px;background-color:rgba(0,0,0,0);}
+html::-webkit-scrollbar-thumb, .vditor-reset::-webkit-scrollbar-thumb{border-radius:6px;background-color:rgba(0,0,0,.2);transition:all .4s ease;-moz-transition:all .4s ease;-webkit-transition:all .4s ease;-o-transition:all .4s ease}
+html::-webkit-scrollbar-track, .vditor-reset::-webkit-scrollbar-track{background-color:rgba(0,0,0,.1)}
 .text-info{color: rgba(var(--inis-info), var(--inis-opacity)) !important}
 .svg-info{fill: rgba(var(--inis-info), var(--inis-opacity)) !important}
 .svg-info svg path{stroke: rgba(var(--inis-info), var(--inis-opacity)) !important}
+
+.font-28{font-size: 28px !important}
 
 .h-21px{height: 21px}
 
@@ -205,13 +207,12 @@ html::-webkit-scrollbar-track{background-color:rgba(0,0,0,.1)}
 .markdown .album .alt{
     color: white;
     position: absolute;
-    bottom: 4px;
+    bottom: 0;
     width: 100%;
     text-align: center;
-    transition:all .2s ease;-moz-transition:all .2s ease;-webkit-transition:all .2s ease;-o-transition:all .2s ease
-}
-.markdown .album figure:hover span {
-    bottom: 10px;
+    border-radius: 0 0 var(--inis-radius) var(--inis-radius);
+    background-image: linear-gradient(0deg,rgba(29,41,49,.5),rgba(255,255,255,0));
+    padding-top: .5em;
     transition:all .2s ease;-moz-transition:all .2s ease;-webkit-transition:all .2s ease;-o-transition:all .2s ease
 }
 
@@ -1028,4 +1029,33 @@ body[data-leftbar-compact-mode=condensed]:not(.authentication-bg) {
 }
 .justify-content-space-between{
     justify-content: space-between;
+}
+.first-comment-box .vditor, .first-comment-box .vditor-toolbar,
+.markdown.comments .vditor, .markdown.comments .vditor-toolbar{
+    border:unset;
+    background-color: unset;
+}
+.first-comment-box .vditor-toolbar, .markdown.comments .vditor-toolbar{
+    padding-left: unset!important;
+}
+.first-comment-box .vditor-reset, .markdown.comments .vditor-reset{
+    padding: 10px!important;
+}
+.first-comment-box .vditor-resize > div, .markdown.comments .vditor-resize > div{
+    background-color: unset!important;
+}
+.first-comment-box .vditor-resize:hover > div, .first-comment-box .vditor-resize--selected > div,
+.markdown.comments .vditor-resize:hover > div, .markdown.comments .vditor-resize--selected > div{
+    background-color: var(--resize-background-color);
+}
+.first-comment-box .vditor-resize:hover svg, .first-comment-box .vditor-resize--selected svg,
+.markdown.comments .vditor-resize:hover svg, .markdown.comments .vditor-resize--selected svg{
+    fill: var(--resize-icon-color);
+}
+.vditor-ir pre.vditor-reset:empty::before, .vditor-wysiwyg pre.vditor-reset:empty::before{
+    font-size: 13px;
+}
+.markdown.comments img[title] {
+    width: 20px!important;
+    height: 20px!important;
 }

@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="page.preview.show" class="flex-center">
+                        <div v-if="page.preview.show && !empty(page.preview.list)" class="flex-center">
                             <div class="btn-group">
                                 <button v-on:click="hasLinksSort(item.id, 1)" type="button" class="btn btn-sm btn-white box-shadow mimic">
                                     <i class="mdi mdi-chevron-left"></i>
@@ -82,6 +82,9 @@
                                     <i class="mdi mdi-chevron-right"></i>
                                 </button>
                             </div>
+                        </div>
+                        <div v-else class="flex-center">
+                            当前友链分数无数据
                         </div>
                     </div>
                 </div>

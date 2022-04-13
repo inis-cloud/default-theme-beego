@@ -12,6 +12,7 @@
 [[define "head"]]
 [[assets_css "https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css"]]
 [[assets_css "/assets/libs/highlight/index.css"]]
+[[assets_css "https://cdn.jsdelivr.net/npm/vditor/dist/index.css"]]
 [[end]]
 
 [[define "script"]]
@@ -19,6 +20,17 @@
 [[assets_js "https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"]]
 [[assets_js "/assets/libs/highlight/index.js"]]
 [[assets_js "/assets/js/pages/index/article.js"]]
+[[assets_js "https://cdn.jsdelivr.net/npm/marked/marked.min.js"]]
+[[assets_js "https://cdn.jsdelivr.net/npm/vditor/dist/index.min.js"]]
+[[end]]
+
+[[define "body"]]
+[[end]]
+
+[[define "body"]]
+[[end]]
+
+[[define "body"]]
 [[end]]
 
 [[define "content"]]
@@ -93,10 +105,18 @@
         </div>
         <div class="card first-comment-box">
             <div class="card-header">
-                <h5>
+                <h5 v-if="!userInfo.login">
                     评论
                     <span class="float-end">[[.item.Data.expand.comments]]</span>
                 </h5>
+                <div v-else class="d-flex">
+                    <img :src="userInfo.data?.head_img" height="36" class="d-flex me-2 rounded-circle">
+                    <div class="w-100 overflow-hidden">
+                        <span class="font-13 fw-bolder float-end">[[.item.Data.expand.comments]]</span>
+                        <h6 class="m-0 font-14">{{userInfo.data?.nickname}}</h6>
+                        <small class="text-muted">{{userInfo.data?.email}}</small>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <comment-box aid="[[.item.Data.id]]" v-on:finish="finish"></comment-box>

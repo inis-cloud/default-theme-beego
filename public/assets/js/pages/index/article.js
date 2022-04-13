@@ -3,24 +3,24 @@
     const app = Vue.createApp({
         data() {
             return {
-                hitokoto:{
-                    data:{},
+                hitokoto: {
+                    data: {},
                     load: false
                 },
-                directory: []
+                directory: [],
             }
         },
         components: {
             'comment-box': components.commentBox(),
             'comment-article': components.commentArticle(),
         },
-        mounted(){
+        mounted() {
             this.imagesBox()
             this.runHitokoto()
             this.getTagAll()
         },
         methods: {
-            imagesBox(){
+            imagesBox() {
                 // 获取渲染文章下的全部图片
                 const images = document.querySelector(".markdown").getElementsByTagName("img");
                 for (let item of images) {
@@ -29,27 +29,27 @@
                 }
             },
             // 发起一言请求
-            runHitokoto(){
-                this.hitokoto.load= true
-                inisHelper.fetch.get('https://v1.hitokoto.cn').then(res=>{
+            runHitokoto() {
+                this.hitokoto.load = true
+                inisHelper.fetch.get('https://v1.hitokoto.cn').then(res => {
                     this.hitokoto = {
-                        data:res,
-                        load:false
+                        data: res,
+                        load: false
                     }
                 })
             },
             // 评论完成
-            finish(){
-                const cache   = inisHelper.stringfy({api: 'comments', id: this.aid})
+            finish() {
+                const cache = inisHelper.stringfy({api: 'comments', id: this.aid})
                 // 清理评论相关缓存
                 for (let item in sessionStorage.valueOf()) if (item.indexOf(cache) != -1) {
                     sessionStorage.removeItem(item)
                 }
-                Notify(`评论成功！但需要刷新一下才能看到<a href='${document.URL}' class="ml-1">刷新</a>`,'success')
+                Notify(`评论成功！但需要刷新一下才能看到<a href='${document.URL}' class="ml-1">刷新</a>`, 'success')
             },
             // 获取文章内的全部H1-6标签
-            getTagAll(){
-                let map   = []
+            getTagAll() {
+                let map = []
                 // 采用递归调用的方法，比较方便和简单。
                 const fds = node => {
                     if (node.nodeType === 1) {
@@ -59,8 +59,13 @@
                             if (!inisHelper.is.empty(node.textContent)) {
                                 // 给H标签设置唯一的ID
                                 const id = tagName + '-' + (map.length + 1)
-                                node.setAttribute('id',id)
-                                map.push({id,name:tagName,index:parseInt(tagName.slice(1,2)),text:node.textContent})
+                                node.setAttribute('id', id)
+                                map.push({
+                                    id,
+                                    name: tagName,
+                                    index: parseInt(tagName.slice(1, 2)),
+                                    text: node.textContent
+                                })
                             }
                         }
                     }
@@ -73,11 +78,11 @@
                 }
             },
             // 定位
-            toTarget: id => $("html,body").animate({scrollTop:$(`#${id}`).offset().top-200},1),
+            toTarget: id => $("html,body").animate({scrollTop: $(`#${id}`).offset().top - 200}, 1),
             // 路由跳转
-            toRoute: url => window.location.href  = url,
+            toRoute: url => window.location.href = url,
             // 自然时间
-            nature: (date = null,type = 5) => inisHelper.time.nature(inisHelper.date.to.time(date), type),
+            nature: (date = null, type = 5) => inisHelper.time.nature(inisHelper.date.to.time(date), type),
             // 格式化数字
             format: (value = 0) => inisHelper.format.number(value),
             // 判断是否为空
@@ -88,7 +93,24 @@
                 // 在base.js封装了公共方法
                 mounted: (el) => directives.highlight(el)
             }
-        }
+        },
+        computed: {
+            userInfo(){
+                let result = {
+                    data : {},
+                    token: null,
+                    login: false
+                }
+                if (inisHelper.has.cookie('LOGIN-TOKEN')) {
+                    result = {
+                        data : inisHelper.get.session('USER-INFO'),
+                        token: inisHelper.get.cookie('LOGIN-TOKEN'),
+                        login: true
+                    }
+                } else result.login = false
+                return result
+            }
+        },
     })
     app.component('tree', {
         props: ['array'],
@@ -110,5 +132,4 @@
         </li>`
     })
     app.mount('#app')
-
 })()

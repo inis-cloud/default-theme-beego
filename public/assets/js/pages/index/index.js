@@ -1,5 +1,4 @@
 (()=>{
-
     const app = Vue.createApp({
         data(){
             return {
@@ -144,17 +143,4 @@
             this.scale()
         },
     }).mount('#app')
-
-    // 站点信息自动高度
-    const siteAuto = () => {
-        const mobile = inisHelper.is.mobile()
-        const dom    = document.querySelector('#home-site-auto .card-body')
-        if (mobile) {
-            dom.style.setProperty('height', 'auto')
-        } else {
-            dom.style.setProperty('height', '324px')
-        }
-    }
-    // siteAuto()
-    // window.onresize = siteAuto
 })()
