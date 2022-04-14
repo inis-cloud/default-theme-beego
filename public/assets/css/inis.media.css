@@ -74,15 +74,15 @@
     .nav-user .account-user-avatar{
         top: calc(21px / 2);
     }
-    #banner .carousel-caption{
-        position: absolute;
-        right: unset;
-        top: 20px;
-        left: 20px;
-        padding-top: 20px;
-        padding-bottom: unset;
-        text-align: unset;
-    }
+    /*#banner .carousel-caption{*/
+    /*    position: absolute;*/
+    /*    right: unset;*/
+    /*    top: 20px;*/
+    /*    left: 20px;*/
+    /*    padding-top: 20px;*/
+    /*    padding-bottom: unset;*/
+    /*    text-align: unset;*/
+    /*}*/
     #article-banner .carousel-item img{height: 200px}
     .mackdown.comments .inbox-item p.text-muted > p{
         margin-bottom: 0;

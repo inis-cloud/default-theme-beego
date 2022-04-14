@@ -109,10 +109,6 @@
                     this.hitokoto.load = false
                 })
             },
-            // 自然时间
-            nature(time = null,type = 5){
-                return inisHelper.time.nature(time,type)
-            },
             // 公告或站长信息自动高度
             cardAutoHigth(){
                 const markCard = document.querySelector("#home-mark-card .card.first")
@@ -136,7 +132,15 @@
                     const height = item.offsetWidth / scale
                     item.setAttribute('height', height)
                 })
-            }
+            },
+            // 自然时间
+            nature(time = null,type = 5){
+                return inisHelper.time.nature(time,type)
+            },
+            // 格式化数字
+            format: (value = 0) => inisHelper.format.number(value),
+            // 判断是否为空
+            empty: (data = null) => inisHelper.is.empty(data),
         },
         updated(){
             this.cardAutoHigth()

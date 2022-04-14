@@ -8,17 +8,17 @@
 
     <link rel="shortcut icon" href="[[.config.Data.opt.basic.site.favicon]]">
 
-    <link href="/assets/css/icons.min.css" rel="stylesheet" type="text/css">
-    <link href="/assets/css/app-modern.min.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/icons.min.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
+    <link href="/assets/css/app-modern.min.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
 
-    <link href="/assets/css/inis.media.css" rel="stylesheet" type="text/css">
+    <link href="/assets/css/inis.media.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
 
-    <script src="/assets/libs/vue3.js"></script>
-    <script src="/assets/libs/helper.js"></script>
-    <script src="/assets/libs/lottie/index.js"></script>
+    <script src="/assets/libs/vue3.js?v=[[.inis.version]]"></script>
+    <script src="/assets/libs/helper.js?v=[[.inis.version]]"></script>
+    <script src="/assets/libs/lottie/index.js?v=[[.inis.version]]"></script>
 
     <!-- head - link -->
-    [[template "head"]]
+    [[template "head" .]]
     <!-- head - link -->
 
     <script>window.INIS = [[.inis]]</script>
@@ -64,13 +64,13 @@
     [[str2html .config.Data.opt.developer.code.html.body]]
     <!-- 自定义HTML - 结束 -->
 
-    <script src="/assets/js/vendor.min.js"></script>
-    <script src="/assets/js/app.min.js"></script>
-    <script src="/assets/js/layout/base.js"></script>
-    <script src="/assets/js/layout/comm.js"></script>
+    <script src="/assets/js/vendor.min.js?v=[[.inis.version]]"></script>
+    <script src="/assets/js/app.min.js?v=[[.inis.version]]"></script>
+    <script src="/assets/js/layout/base.js?v=[[.inis.version]]"></script>
+    <script src="/assets/js/layout/comm.js?v=[[.inis.version]]"></script>
 
     <!-- script - link -->
-    [[template "script"]]
+    [[template "script" .]]
     <!-- script - link -->
 </body>
 </html>

@@ -642,18 +642,18 @@ a.badge-dark.focus,a.badge-dark:focus{outline:0;-webkit-box-shadow:0 0 0 .2rem r
 .app-search .form-control{
     background-color: rgba(245,251,255,var(--inis-opacity));
 }
-#banner .carousel-inner .carousel-item:after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: "";
-    background-color: rgba(0 0 0 / 50%);
-    opacity: 0.4;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    border-radius: var(--inis-radius);
-}
+/*#banner .carousel-inner .carousel-item:after {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    content: "";*/
+/*    background-color: rgba(0 0 0 / 50%);*/
+/*    opacity: 0.4;*/
+/*    z-index: 1;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    border-radius: var(--inis-radius);*/
+/*}*/
 #banner .carousel-inner:after {
     position: absolute;
     width: 10px;
@@ -871,9 +871,10 @@ body[data-layout=detached][data-leftbar-compact-mode=condensed] .wrapper .conten
     transition: .4s;
     position: absolute;
     content: '';
-    background: #f04494;
+    /*background: #f04494;*/
+    background: rgba(var(--inis-info), var(--inis-opacity));
     border-radius: 5px;
-    box-shadow: 1px 1px 3px -1px #f04494;
+    box-shadow: 1px 1px 3px -1px rgba(var(--inis-info), var(--inis-opacity));
 }
 .subscript-left:hover:before{
     width: 60px;

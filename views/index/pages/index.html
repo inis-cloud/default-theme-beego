@@ -12,7 +12,7 @@
 [[define "head"]][[end]]
 
 [[define "script"]]
-<script src="/assets/js/pages/index/index.js"></script>
+<script src="/assets/js/pages/index/index.js?v=[[.inis.version]]"></script>
 [[end]]
 
 [[define "content"]]
@@ -31,15 +31,16 @@
                         [[range $index, $item := .banner.Data.data]]
                         <div class="carousel-item [[if eq $index 0]]active[[end]]">
                             <img src="[[$item.img]]" class="d-block w-100 banner-image-auto" alt="[[$item.description]]">
-                            <div class="carousel-caption z-index-9 hover-blur">
+                            <!-- carousel-caption z-index-9 hover-blur -->
+                            <div class="carousel-caption z-index-9 start-0 end-0 bottom-0 text-start pb-0 pt-3 px-3 single-cover">
                                 [[if eq $item.opt.jump "inside"]]
                                 <a href="/article/[[$item.opt.article_id]].html" class="text-white">
-                                    <h5>[[$item.title]]</h5>
+                                    <h5 v-if="!empty('[[$item.title]]')" class="subscript-left my-0">[[$item.title]]</h5>
                                     <p>[[$item.description]]</p>
                                 </a>
                                 [[else]]
                                 <a href="[[$item.url]]" target="_blank" class="text-white">
-                                    <h5>[[$item.title]]</h5>
+                                    <h5 v-if="!empty('[[$item.title]]')" class="subscript-left my-0">[[$item.title]]</h5>
                                     <p>[[$item.description]]</p>
                                 </a>
                                 [[end]]
@@ -111,7 +112,7 @@
                 <a href="/article/[[$item.id]].html" class="hover-a-img position-relative">
                     <img src="[[$item.expand.img_src]]" class="w-100 img-cover" height="200">
                     <div class="card-img-overlay">
-                        <div class="badge badge-secondary p-1">[[$item.views]]</div>
+                        <div class="badge badge-secondary p-1">{{format('[[$item.views]]')}}</div>
                     </div>
                     <p class="position-absolute bottom-0 end-0 start-0 mb-0 py-1 background-image flex justify-content-end">
                         [[range $index, $item := $item.expand.tag]]
@@ -147,7 +148,7 @@
                 <a :href="'article/' + item.id + '.html'" class="hover-a-img position-relative">
                     <img :src="item.expand.img_src" class="w-100 img-cover" height="200">
                     <div class="card-img-overlay">
-                        <div class="badge badge-secondary p-1">{{item.views || 0}}</div>
+                        <div class="badge badge-secondary p-1">{{format(item.views || 0)}}</div>
                     </div>
                     <p class="position-absolute bottom-0 end-0 start-0 mb-0 py-1 background-image flex justify-content-end">
                         <span v-for="(item, index) in item.expand.tag" :class="'badge badge-' + item.color + '-lighten me-1'">{{item.name}}</span>
