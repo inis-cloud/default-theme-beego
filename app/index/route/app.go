@@ -48,6 +48,12 @@ func init() {
 		beego.NSRouter(".htm",&views.SearchController{}),
 		beego.NSRouter("",&views.SearchController{}),
 	)
+	// 动态
+	dynamic := beego.NewNamespace("/dynamic",
+		beego.NSRouter(":.html",&views.DynamicController{}),
+		beego.NSRouter(":.htm",&views.DynamicController{}),
+		beego.NSRouter("",&views.DynamicController{}),
+	)
 	// 添加路由分组
-	beego.AddNamespace(article, sort, tag, page, chic, search)
+	beego.AddNamespace(article, sort, tag, page, chic, search, dynamic)
 }

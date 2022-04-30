@@ -12,19 +12,20 @@
 [[define "head"]]
 <link rel="stylesheet" href="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css?v=[[.inis.version]]">
 <link rel="stylesheet" href="/assets/libs/highlight/index.css?v=[[.inis.version]]">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vditor/dist/index.css?v=[[.inis.version]]">
+<link rel="stylesheet" href="https://cdn.inis.cc/comm/libs/vditor/dist/index.css?v=[[.inis.version]]">
 [[end]]
 
 [[define "script"]]
-<script src="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js?v=[[.inis.version]]"></script>>
+<script src="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js?v=[[.inis.version]]"></script>
 [[assets_js "https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"]]
 <script src="/assets/libs/highlight/index.js?v=[[.inis.version]]"></script>
 <script src="/assets/js/pages/index/article.js?v=[[.inis.version]]"></script>
-<script src="https://cdn.jsdelivr.net/npm/vditor/dist/index.min.js?v=[[.inis.version]]"></script>
+<script src="https://cdn.inis.cc/comm/libs/vditor/dist/index.min.js?v=[[.inis.version]]"></script>
+<script src="/assets/libs/html2canvas.min.js"></script>
+<script src="/assets/libs/qrcode.min.js"></script>
 [[end]]
 
-[[define "body"]]
-[[end]]
+[[define "body"]][[end]]
 
 [[define "content"]]
 <div id="article" class="row">
@@ -47,7 +48,7 @@
                     <span class="badge bg-dark rounded-pill px-2">
                         <span class="me-1">
                             <svg t="1647017193586" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2216" width="12" height="12"><path d="M481.578667 968.832l-157.909334-158.293333H85.418667A85.290667 85.290667 0 0 1 0 725.12L0.426667 128.042667C0.426667 80.768 38.4 42.666667 85.845333 42.666667h852.778667c47.189333 0 85.418667 38.101333 85.376 85.418666l-0.426667 597.12c0 47.146667-38.229333 85.333333-85.376 85.333334h-237.781333l-158.549333 158.293333a42.624 42.624 0 0 1-60.288 0z m456.704-243.712L938.666667 128.042667s-852.906667-0.128-852.906667 0.042666c0 0-0.384 597.077333-0.298667 597.077334H341.333333c11.306667 0 22.186667 4.48 30.165334 12.501333l140.330666 140.629333 140.8-140.672a42.624 42.624 0 0 1 30.165334-12.458666h255.488zM277.333333 512a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z" fill="#ffffff" p-id="2217"></path></svg>
-                            {{format('[[.item.Data.expand.comments]]')}}
+                            {{format('[[.item.Data.expand.comments.count]]')}}
                         </span>
                         <span class="me-1">
                             <svg t="1647017265258" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3827" width="18" height="18"><path d="M512 302c-162.377 0-304.149 85.065-380 211.5C207.851 639.935 349.623 725 512 725s304.149-85.065 380-211.5C816.149 387.065 674.377 302 512 302z m0-88.35c189.522 0 361.931 97.994 455.762 254.399a88.35 88.35 0 0 1 0 90.902C873.932 715.356 701.522 813.35 512 813.35S150.069 715.356 56.238 558.951a88.35 88.35 0 0 1 0-90.902C150.068 311.644 322.478 213.65 512 213.65z m0.5 428.525c-71.065 0-128.675-57.61-128.675-128.675 0-71.065 57.61-128.675 128.675-128.675 71.065 0 128.675 57.61 128.675 128.675 0 71.065-57.61 128.675-128.675 128.675z m0-88.35c22.27 0 40.325-18.054 40.325-40.325 0-22.27-18.054-40.325-40.325-40.325-22.27 0-40.325 18.054-40.325 40.325 0 22.27 18.054 40.325 40.325 40.325z" p-id="3828" fill="#ffffff"></path></svg>
@@ -86,7 +87,7 @@
                 <div class="d-flex align-items-start">
                     <img class="me-2 rounded-circle" src="[[.item.Data.expand.author.head_img]]" width="40" alt="[[.item.Data.expand.author.description]]">
                     <div class="w-100 overflow-hidden">
-<!--                        <small class="badge badge-warning-lighten float-end">占位符</small>-->
+                         <small v-on:click="createPoster()" class="badge badge-warning-lighten float-end cursor fw-bolder py-1 px-2">分享</small>
                         <p class="text-dark font-14 mb-0">[[.item.Data.expand.author.nickname]]</p>
                         <small class="text-muted">{{nature("[[.item.Data.last_update_time]]")}}更新</small>
                     </div>
@@ -96,16 +97,19 @@
                 [[str2html .item.Data.content]]
             </div>
         </div>
+
+        <!-- 是否允许评论 - 开始 -->
+        [[if .item.Data.expand.comments.allow]]
         <div class="card first-comment-box">
             <div class="card-header">
                 <h5 v-if="!userInfo.login">
                     评论
-                    <span class="float-end">[[.item.Data.expand.comments]]</span>
+                    <span class="float-end">[[.item.Data.expand.comments.count]]</span>
                 </h5>
                 <div v-else class="d-flex">
                     <img :src="userInfo.data?.head_img" height="36" class="d-flex me-2 rounded-circle">
                     <div class="w-100 overflow-hidden">
-                        <span class="font-13 fw-bolder float-end">[[.item.Data.expand.comments]]</span>
+                        <span class="font-13 fw-bolder float-end">[[.item.Data.expand.comments.count]]</span>
                         <h6 class="m-0 font-14">{{userInfo.data?.nickname}}</h6>
                         <small class="text-muted">{{userInfo.data?.email}}</small>
                     </div>
@@ -115,11 +119,27 @@
                 <comment-box aid="[[.item.Data.id]]" v-on:finish="finish"></comment-box>
             </div>
         </div>
+        [[else]]
         <div class="card">
-            <div class="card-body">
-                <comment-article id="[[.item.Data.id]]"></comment-article>
+            <div class="card-body p-2">
+                <div class="text-center">
+                    <span class="fw-bolder font-13">系统已关闭评论功能</span>
+                </div>
             </div>
         </div>
+        [[end]]
+        <!-- 是否允许评论 - 结束 -->
+
+        <!-- 是否显示评论 - 开始 -->
+        [[if .item.Data.expand.comments.show]]
+        <div class="card">
+            <div class="card-body">
+                <comment-article id="[[.item.Data.id]]" :config="{show:[[.item.Data.expand.comments.show]], allow:[[.item.Data.expand.comments.allow]]}"></comment-article>
+            </div>
+        </div>
+        [[end]]
+        <!-- 是否显示评论 - 结束 -->
+
     </div>
     <div class="col-lg-4">
         <div class="card hot">
@@ -242,4 +262,75 @@
         </div>
     </div>
 </div>
+
+<teleport to="body">
+    <!-- 模态框 - 开始 -->
+    <div id="poster-alert-modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div ref="canvas" class="canvas">
+                    <div class="modal-header p-0 position-relative">
+                        <input v-on:change="uploadChange()" ref="inputFile" class="d-none" type="file" accept="image/*">
+                        <img v-on:click="this.$refs.inputFile.click()" v-base64 ref="cover" src="[[.item.Data.expand.img_src]]" title="[[.item.Data.title]]" class="d-block w-100 img-cover cursor" height="250" style="border-radius: 0;">
+                        <span class="position-absolute top-0 end-0 p-2">
+                            <span class="badge bg-dark rounded-pill px-2" style="background-color: rgba(var(--bs-dark-rgb),.5)!important;">
+                                <span class="me-1">
+                                    <svg t="1647017193586" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2216" width="12" height="12"><path d="M481.578667 968.832l-157.909334-158.293333H85.418667A85.290667 85.290667 0 0 1 0 725.12L0.426667 128.042667C0.426667 80.768 38.4 42.666667 85.845333 42.666667h852.778667c47.189333 0 85.418667 38.101333 85.376 85.418666l-0.426667 597.12c0 47.146667-38.229333 85.333333-85.376 85.333334h-237.781333l-158.549333 158.293333a42.624 42.624 0 0 1-60.288 0z m456.704-243.712L938.666667 128.042667s-852.906667-0.128-852.906667 0.042666c0 0-0.384 597.077333-0.298667 597.077334H341.333333c11.306667 0 22.186667 4.48 30.165334 12.501333l140.330666 140.629333 140.8-140.672a42.624 42.624 0 0 1 30.165334-12.458666h255.488zM277.333333 512a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z m234.666667 0a64 64 0 1 1 0-128 64 64 0 0 1 0 128z" fill="#ffffff" p-id="2217"></path></svg>
+                                    {{format('[[.item.Data.expand.comments.count]]')}}
+                                </span>
+                                <span class="me-1">
+                                    <svg t="1647017265258" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3827" width="18" height="18"><path d="M512 302c-162.377 0-304.149 85.065-380 211.5C207.851 639.935 349.623 725 512 725s304.149-85.065 380-211.5C816.149 387.065 674.377 302 512 302z m0-88.35c189.522 0 361.931 97.994 455.762 254.399a88.35 88.35 0 0 1 0 90.902C873.932 715.356 701.522 813.35 512 813.35S150.069 715.356 56.238 558.951a88.35 88.35 0 0 1 0-90.902C150.068 311.644 322.478 213.65 512 213.65z m0.5 428.525c-71.065 0-128.675-57.61-128.675-128.675 0-71.065 57.61-128.675 128.675-128.675 71.065 0 128.675 57.61 128.675 128.675 0 71.065-57.61 128.675-128.675 128.675z m0-88.35c22.27 0 40.325-18.054 40.325-40.325 0-22.27-18.054-40.325-40.325-40.325-22.27 0-40.325 18.054-40.325 40.325 0 22.27 18.054 40.325 40.325 40.325z" p-id="3828" fill="#ffffff"></path></svg>
+                                    {{format('[[.item.Data.views]]')}}
+                                </span>
+                                <span>
+                                    <svg t="1647017916044" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="12065" width="13" height="13"><path d="M830 99H194c-53.02 0-96 42.98-96 96v634c0 53.02 42.98 96 96 96h636c53.02 0 96-42.98 96-96V195c0-53.02-42.98-96-96-96z m-636 64h636c17.673 0 32 14.327 32 32v634c0 17.673-14.327 32-32 32H194c-17.673 0-32-14.327-32-32V195c0-17.673 14.327-32 32-32z" fill="#ffffff" p-id="12066"></path><path d="M671.783 328c26.861 0 48.775 21.497 49.21 48.287l0.007 0.813V417h-64v-25H544.5v272.756l49.95 0.156-0.199 64-164.35-0.512 0.199-64 50.4 0.157V392H369v25h-64v-39.9c0-26.895 21.645-48.66 48.405-49.093l0.812-0.007h317.566z" fill="#ffffff" p-id="12067"></path></svg>
+                                    {{format('[[.item.Data.font_count]]')}}
+                                </span>
+                            </span>
+                        </span>
+                        <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-2">
+                            <h4 class="text-white before-info subscript-left cursor mb-1">
+                                [[.item.Data.title]]
+                                [[if .item.Data.expand.sort]]
+                                [
+                                [[range $index, $item := .item.Data.expand.sort]]
+                                [[$item.name]]
+                                [[end]]
+                                ]
+                                [[end]]
+                            </h4>
+                            <p class="text-white mb-0">
+                                <i class="mdi mdi-account-tie me-1"></i>
+                                <span>[[.item.Data.expand.author.nickname]]</span>
+                                <i class="mdi mdi-circle-medium"></i>
+                                <span>[[.item.Data.expand.author.description]]</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-body px-3 py-2">
+                        <p class="mt-1">[[.item.Data.description]]</p>
+                        <div class="flex align-items-center justify-content-space-between">
+                            <div class="float-start">
+                                <img v-base64 src="/assets/images/logo.png" height="32">
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <div class="d-flex flex-column align-items-end me-1" style="margin-top: 3px;">
+                                    <p class="mb-0">保存图片</p>
+                                    <p class="mb-0">扫一扫阅读文章</p>
+                                    <p class="mb-0">你感兴趣的都在</p>
+                                </div>
+                                <div id="qrcode" ref="qrcode"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-secondary d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">关闭</button>
+                    <button v-on:click="createCanvas()" type="button" class="btn btn-primary">保存图片</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框 - 结束 -->
+</teleport>
 [[end]]

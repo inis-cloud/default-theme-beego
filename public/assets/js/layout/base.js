@@ -54,6 +54,13 @@ const directives = {
             })
         })
     },
+    imagebox: (el) => {
+        const images = el.getElementsByTagName("img")
+        for (let item of images) {
+            // 给图片上预览盒子
+            item.outerHTML = `<a data-fancybox="gallery" href="${item.src}" data-caption="${item.alt}">${item.outerHTML}</a>`
+        }
+    }
 }
 
 // 自定义组件
@@ -63,6 +70,7 @@ const components = {
         return {
             data(){
                 return {
+                    vditor: {},
                     comment: {
                         pid: 0,             // 父级评论ID
                         url: '',            // 网址
@@ -82,10 +90,33 @@ const components = {
                 }
             },
             // aid => 文章ID, placeholder => 评论框描述
-            props: ['aid','placeholder','pid'],
+            // props: ['aid','placeholder','pid'],
+            props: {
+                aid: {
+                    type: String,
+                    default: '',
+                },
+                placeholder: {
+                    type: String,
+                    default: '',
+                },
+                pid: {
+                    type: String,
+                    default: '',
+                },
+                config: {
+                    type: Object,
+                    default: {}
+                },
+                btn: {
+                    type: String,
+                    default: '发表',
+                }
+            },
             mounted(){
                 if (!inisHelper.is.empty(this.aid)) this.comment.article_id = this.aid
                 if (!inisHelper.is.empty(this.pid)) this.comment.pid = this.pid
+                this.comment = {...this.comment, ...this.config}
             },
             methods:{
                 hasEmoji(el, config = {}){
@@ -115,9 +146,11 @@ const components = {
                 // 初始化编辑器
                 initVditor(el, config = {}){
                     let options = {
+                        value: this.comment?.content,
+                        cdn: 'https://cdn.inis.cc/comm/libs/vditor',
                         height: 200,
                         minHeight: 200,
-                        placeholder: '说点什么吧 (支持Mackdown语法！) * ... ... ',
+                        placeholder: this.placeholder || '说点什么吧 (支持Mackdown语法！) * ... ... ',
                         mode: 'wysiwyg',
                         icon: 'material',           // 图标风格
                         toolbarConfig: {
@@ -208,20 +241,22 @@ const components = {
                                 className: "right",
                                 icon: `<img src='/assets/svg/album.svg' height="16">`,
                                 click: () => {
-                                    window.vditor.insertValue('[album]\n支持Markdown格式和HTML格式的图片\n[/album]')
+                                    this.vditor.insertValue('[album]\n支持Markdown格式和HTML格式的图片\n[/album]')
                                 }
                             },
+                            "edit-mode","help",
                             "|",
                             "undo","redo",
                         ],
                     }
                     // 对象深度合并
                     config = inisHelper.object.deep.merge(options, config)
-                    window.vditor = new Vditor(el, config)
+                    this.vditor   = new Vditor(el, config)
+                    window.vditor = this.vditor
                 },
                 // 前置校验
                 check(){
-                    if (inisHelper.is.empty(window.vditor.getValue())) Notify('您可以说点什么哟~','warning')
+                    if (inisHelper.is.empty(this.vditor.getValue())) Notify('您可以说点什么哟~','warning')
                     else {
                         // 登录后评论
                         if (this.userInfo.login) this.send()
@@ -238,7 +273,7 @@ const components = {
                 send(){
                     // 加载中
                     this.is.load = true
-                    this.comment.content = inisHelper.html2md(window.vditor.getHTML())
+                    this.comment.content = inisHelper.html2md(this.vditor.getHTML())
                     // 发送评论
                     Post('comments', this.comment,{
                         headers: this.userInfo.login ? {
@@ -249,7 +284,7 @@ const components = {
                             Notify('爱你哟！♥','success')
                             this.$emit('finish')
                             // 恢复默认数据
-                            window.vditor.setValue('')
+                            this.vditor.setValue('')
                             this.comment = {...this.comment, ...{pid:0,content:''}}
                         } else Notify(res.msg,'error')
                         this.is.load = false
@@ -257,7 +292,7 @@ const components = {
                 },
                 // 取消评论
                 cancel(){
-                    this.$emit('changeBoxId',0)
+                    this.$emit('cancel',0)
                 },
                 empty: (data) => inisHelper.is.empty(data),
             },
@@ -313,7 +348,7 @@ const components = {
                     <!-- 发表评论 -->
                     <div class="col-lg-12">
                         <button v-if="!is.load" v-on:click="check()" type="button" class="btn btn-outline-info btn-sm float-end">
-                            <i class="mdi mdi-star-outline mdi-spin"></i> 发表评论
+                            <i class="mdi mdi-star-outline mdi-spin"></i> {{btn}}
                         </button>
                         <button v-else type="button" class="btn btn-outline-info btn-sm float-end" disabled>
                             <div class="spinner-border text-light is-load me-1" role="status"></div> 发送中 ...
@@ -347,7 +382,19 @@ const components = {
                 }
             },
             // id => 文章ID
-            props: ['id'],
+            // props: ['id','config'],
+            props: {
+                id: {},
+                config: {
+                    type: Object,
+                    default: () => {
+                        return {
+                            show: true,
+                            allow: true,
+                        }
+                    }
+                }
+            },
             mounted(){
                 this.hasComment()
             },
@@ -438,14 +485,14 @@ const components = {
                         </div>
                         <h5 class="inbox-item-author mt-0">
                             <a :href="item.url" class="text-secondary font-13">{{item.nickname}}</a>
-                            <span v-on:click="box = {id:item.id,nickname:item.nickname}" class="badge bg-dark ms-2 cursor reply">回复</span>
+                            <span v-if="config.allow" v-on:click="box = {id:item.id,nickname:item.nickname}" class="badge bg-dark ms-2 cursor reply">回复</span>
                         </h5>
                         <p class="inbox-item-text">{{item.create_time}}</p>
                         <p v-html="item.expand.html" class="text-muted mb-0"></p>
                     </div>
                     <div v-if="box.id == item.id" class="card">
                         <div class="card-body p-lg-3 p-2">
-                            <comment-box :pid="item.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:changeBoxId="setBoxId" v-on:finish="finish"></comment-box>
+                            <comment-box :pid="item.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:cancel="setBoxId" v-on:finish="finish"></comment-box>
                         </div>
                     </div>
                     <!-- 回复 - 开始 -->
@@ -459,13 +506,13 @@ const components = {
                             <a :href="reply.expand.url" class="text-secondary font-13">{{reply.nickname}}</a>
                             <span v-if="reply.pid != item.id" class="text-muted font-13 mx-2">回复</span>
                             <span v-if="reply.pid != item.id" class="text-secondary font-13">@{{reply.expand.pid.nickname}}</span>
-                            <span v-on:click="box = {id:reply.id,nickname:reply.nickname}" class="badge bg-dark ms-2 cursor reply">回复</span>
+                            <span v-if="config.allow" v-on:click="box = {id:reply.id,nickname:reply.nickname}" class="badge bg-dark ms-2 cursor reply">回复</span>
                         </h5>
                         <p class="inbox-item-text">{{reply.create_time}}</p>
                         <p v-html="reply.expand.html" class="text-muted mb-0"></p>
                         <div v-if="box.id == reply.id" class="card">
                             <div class="card-body p-lg-3 p-2">
-                                <comment-box :pid="reply.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:changeBoxId="setBoxId" v-on:finish="finish"></comment-box>
+                                <comment-box :pid="reply.id" :aid="id" :placeholder="'回复 @' + box.nickname" v-on:cancel="setBoxId" v-on:finish="finish"></comment-box>
                             </div>
                         </div>
                     </div>

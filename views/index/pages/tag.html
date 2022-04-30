@@ -19,7 +19,7 @@
 [[define "content"]]
 <div id="sort" class="container-xxl mw-100v mw-lg-65v">
     <div class="card">
-        <div class="card-body p-0">
+        <div class="card-body p-0 circle-after">
             <img src="[[.config.Data.opt.other.images.cross_bg]]" height="300" class="w-100 img-cover img-h-auto">
             <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
                 <h4 v-if="!self.cover" class="text-white subscript-left before-info cursor mb-1">
@@ -104,7 +104,7 @@
                                 <span class="icon-circle">{{nature("[[$item.create_time]]")}}</span>
                                 <span class="float-end flex-center">
                                     <i class="mdi mdi-comment-processing-outline"></i>
-                                    <span class="px-1">{{format("[[$item.expand.comments]]")}}</span>
+                                    <span class="px-1">{{format("[[$item.expand.comments.count]]")}}</span>
                                     <i class="mdi mdi-eye-circle-outline"></i>
                                     <span class="px-1">{{format("[[$item.views]]")}}</span>
                                 </span>
@@ -144,7 +144,7 @@
                                 <span class="icon-circle">{{nature(item.create_time)}}</span>
                                 <span class="float-end flex-center">
                                     <i class="mdi mdi-comment-processing-outline"></i>
-                                    <span class="px-1">{{format(item.expand.comments)}}</span>
+                                    <span class="px-1">{{format(item.expand.comments.count)}}</span>
                                     <i class="mdi mdi-eye-circle-outline"></i>
                                     <span class="px-1">{{format(item.views)}}</span>
                                 </span>

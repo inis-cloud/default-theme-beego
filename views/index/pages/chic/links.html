@@ -86,8 +86,8 @@
                                 </button>
                             </div>
                         </div>
-                        <div v-else class="flex-center">
-                            当前友链分数无数据
+                        <div v-if="empty(page.preview.list)" class="flex-center">
+                            当前友链分组无数据
                         </div>
                     </div>
                 </div>

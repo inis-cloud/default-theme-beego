@@ -2,84 +2,48 @@
     const app = Vue.createApp({
         data(){
             return {
-                // 一言
+                article: {},
+                password: {
+                    id: 0, text: null,
+                },
                 hitokoto: {
-                    text: null,
-                    load: false,
-                },
-                article: {
-                    data: [],
-                    page: 0,        // 总页码
-                    count: 0
-                },
-                page: {
-                    code: 1,        // 当前页码
-                    load: false,
-                    end: false,     // 最后一页
+                    text: null, load: false,
                 },
                 card: {
                     tips: 'placard',
                     title: null,
                     content: null,
                 },
-                password: {
-                    id: 0, text: null,
-                },
-                onresize: $item.banner != 0 ? true : false,
             }
         },
         mounted(){
             this.getHitokoto()
-            this.initArticle()
+            this.hasArticle()
             this.hasPlacard()
             window.onresize = () => {
-                if (this.onresize) this.cardAutoHigth()
                 this.scale()
+                this.cardAutoHigth()
             }
         },
         methods: {
-            // 初始化文章缓存
-            initArticle(){
-                const cache = 'article-config'
-                // 从缓存中判断是否存在总页码
-                if (!inisHelper.get.session(cache,'total_page')) {
-                    Get('article',{
-                        limit: 8
-                    }).then(res=>{
-                        if (res.code == 200) {
-                            // 更新总页码
-                            this.article.page = res.data.page
-                            // 更新缓存总页码
-                            inisHelper.set.session(cache,{total_page:res.data.page})
-                        }
-                    })
-                } else this.article.page = inisHelper.get.session(cache, 'total_page')
+            hasArticle(){
+                const cache = inisHelper.stringfy({api:'article', limit: 8, order: 'is_top desc, views desc'})
+                if (inisHelper.has.session(cache)) {
+                    this.article = inisHelper.get.session(cache)
+                } else this.getArticle()
             },
-            // 检查本地缓存
-            hasArticle(page = 1){
-                // 只有一页，就不要获取API数据了 - 且 - 当前页码小于总页码
-                if (this.article.page > 1 && this.page.code < this.article.page) {
-                    // 页码自增一次
-                    page = ++this.page.code
-                    const cache = inisHelper.stringfy({api:'article',limit:8,page})
-                    if (inisHelper.has.session(cache)) {
-                        const article = inisHelper.get.session(cache)
-                        this.article.data = [...this.article.data, ...article.data]
-                    } else this.getArticle()
-                } else this.page.end = true
-            },
-            // 获取文章数据
-            getArticle(page = this.page.code){
-                const cache = inisHelper.stringfy({api:'article',limit:8,page})
+            getArticle(){
+                const cache = inisHelper.stringfy({api:'article', limit: 8, order: 'is_top desc, views desc'})
                 const token = inisHelper.get.cookie('LOGIN-TOKEN')
                 let config  = {}
                 if (!this.empty(token)) config.headers = {'login-token': token}
                 Get('article',{
-                    limit: 8, page,
+                    limit: 8,
+                    order: 'is_top desc, views desc'
                 }, config).then(res=>{
                     if (res.code == 200) {
-                        this.article.data = [...this.article.data, ...res.data.data]
-                        inisHelper.set.session(cache, res.data)
+                        this.article = res.data.data
+                        inisHelper.set.session(cache, res.data.data)
                     }
                 })
             },
@@ -119,12 +83,12 @@
             // 公告或站长信息自动高度
             cardAutoHigth(){
                 const markCard = document.querySelector("#home-mark-card .card.first")
-                const banner   = document.querySelector("#home-mark-banner .card-body")
+                const error    = document.querySelector("#home-mark-error .card-body")
                 const second   = document.querySelector("#home-mark-card .card.second .card-body")
                 const scroll   = document.querySelector("#home-mark-card .card.second .card-body .customize-scroll")
                 const height = {
                     markCard:markCard.offsetHeight,
-                    banner:banner.offsetHeight,
+                    banner:error.offsetHeight,
                     second:second.offsetHeight,
                     scroll:scroll.offsetHeight,
                 }
@@ -164,8 +128,8 @@
             empty: (data = null) => inisHelper.is.empty(data),
         },
         updated(){
-            if (this.onresize) this.cardAutoHigth()
             this.scale()
+            this.cardAutoHigth()
         },
     }).mount('#app')
 })()

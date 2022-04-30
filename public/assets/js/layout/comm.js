@@ -400,6 +400,8 @@
                                 info: res.data.user,
                             }
                             inisHelper.set.session('USER-INFO', res.data.user)
+                            // 刷新当前页面
+                            window.location.reload()
                         } else Notify(res.msg, 'warning')
                     })
                 }
@@ -423,6 +425,8 @@
                             inisHelper.clear.cookie('LOGIN-TOKEN')
                             inisHelper.cleae.session('USER-INFO')
                             Notify('登录已过期，请重新登录', 'warning')
+                            // 刷新当前页面
+                            window.location.reload()
                         }
                     })
                 }
@@ -435,6 +439,8 @@
                     inisHelper.fetch.delete('/api/cookie')
                     inisHelper.clear.cookie('LOGIN-TOKEN')
                     inisHelper.clear.session('USER-INFO')
+                    // 刷新当前页面
+                    window.location.reload()
                 }, 500)
                 Notify('退出登录成功', 'success')
             },
@@ -538,6 +544,11 @@
                         theme: 'light',   // light, dark
                         leftbar: 'fixed', // fixed, condensed
                     }
+                },
+                storage:{
+                    session:{
+                        length: sessionStorage?.length || 0,
+                    }
                 }
             }
         },
@@ -562,7 +573,12 @@
                     }
                 })
                 this.initData()
-            }
+            },
+            // 清理本地缓存
+            clearStorage(){
+                sessionStorage.clear()
+                this.storage.session.length = sessionStorage?.length || 0
+            },
         },
         computed: {
 

@@ -1,0 +1,137 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+[[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+[[end]]
+
+[[define "script"]]
+<script src="/assets/js/layout/error.js?v=[[.inis.version]]"></script>
+[[end]]
+
+[[define "content"]]
+<div id="error" class="row">
+    [[if .error.Cover]]
+    [[str2html .error.HTML]]
+    [[else]]
+    <div class="col-lg-7" id="home-mark-error">
+<!--        bg-white box-shadow-->
+        <div class="card">
+            <div class="card-body p-2">
+                <div class="d-flex align-items-start align-items-center justify-content-center p-2">
+                    <img src="/assets/svg/file-searching.svg" height="200" class="me-3 me-lg-5">
+                    <div class="overflow-hidden">
+                        <h1 class="text-error mt-4">[[.error.Code]]</h1>
+                        <h4 class="text-uppercase text-danger mt-3">[[.error.Title]]</h4>
+                        <p class="text-muted mt-3">[[.error.Content]]</p>
+                        <a class="btn btn-info" href="/"><i class="mdi mdi-reply me-1"></i>返回首页</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5" id="home-mark-card">
+        <div class="card mb-lg-3 mb-2 first">
+            <div class="card-body py-2">
+                <h3 class="page-title display-7 animated fadeInUp">[[.config.Data.opt.basic.site.title]]</h3>
+                <p class="text-muted mb-0 flex align-items-center justify-content-space-between">
+                    <span v-if="hitokoto.load" class="flex-center">
+                        <span class="spinner-border text-light wh-16px me-2" role="status"></span>
+                        加载中 ...
+                    </span>
+                    <span v-else>
+                        <span class="text-muted">{{hitokoto.text || ''}}</span>
+                    </span>
+                    <i v-on:click="getHitokoto()" class="mdi mdi-refresh float-end font-16 cursor"></i>
+                </p>
+            </div>
+        </div>
+        <div class="card ribbon-box second">
+            <div class="card-body">
+                <div class="ribbon ribbon-primary float-start">
+                    <i class="mdi mdi-access-point me-1"></i>
+                    {{card.tips == 'placard' ? '公告' : '站长信息'}}
+                </div>
+                <h5 v-if="card.tips == 'placard'" class="text-primary float-end mt-0">{{card.title}}</h5>
+                <div v-else class="d-flex align-self-start">
+                    <div class="w-100 overflow-hidden text-end">
+                        <h5 class="mt-1 mb-0">[[.config.Data.opt.basic.site.nickname]]</h5>
+                        <p class="mb-1 mt-1 text-muted">[[.config.Data.opt.basic.site.present]]</p>
+                    </div>
+                    <img src="[[.config.Data.opt.basic.site.head_img]]" height="48" class="d-flex align-self-start rounded ms-2">
+                </div>
+                <div class="ribbon-content customize-scroll">
+                    <p v-if="card.tips == 'placard'" class="mb-0">
+                        {{card.content}}
+                    </p>
+                    <p v-else class="mb-0">
+                        [[.config.Data.opt.basic.site.description]]
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    [[str2html .error.HTML]]
+    [[end]]
+</div>
+<div class="row preview">
+    <div v-for="(item, index) in article" :key="index" class="col-lg-3 article">
+        <div class="card ribbon-box">
+            <div class="card-body p-2">
+                <div v-if="item.is_top" class="ribbon-two ribbon-two-danger"><span>置顶</span></div>
+                <a v-on:click="toRoute('/article/' + item.id + '.html', item.opt.auth, item.id)" href="javascript:;" class="hover-a-img position-relative">
+                    <img :src="item.expand.img_src" class="w-100 img-cover" height="200">
+                    <div class="card-img-overlay">
+                        <div class="badge badge-secondary p-1">{{format(item.views || 0)}}</div>
+                    </div>
+                    <p class="position-absolute bottom-0 end-0 start-0 mb-0 py-1 background-image flex justify-content-end">
+                        <span v-for="(item, index) in item.expand.tag" :class="'badge badge-' + item.color + '-lighten me-1'">{{item.name}}</span>
+                    </p>
+                </a>
+                <div class="position-relative p-1 mt-2">
+                    <h5 class="mt-0 mb-1 font-16 line-1">
+                        <a v-on:click="toRoute('/article/' + item.id + '.html', item.opt.auth, item.id)" href="javascript:;" class="text-secondary">
+                            {{item.title}}
+                        </a>
+                    </h5>
+                    <p class="mb-0">
+                        <span class="pr-2 text-nowrap">
+                            <a href="javascript:;" class="d-inline-block">
+                                <img :src="item.expand.author.head_img" class="rounded-circle avatar-xs">
+                            </a>
+                            {{item.expand.author.nickname}}
+                        </span>
+                        <span class="pr-2 text-nowrap"> 评论：{{item.expand.comments.count}}</span>
+                        <span class="text-nowrap"> 时间：{{nature(item.last_update_time, 1)}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<teleport to="body">
+    <div id="article-auth-password" class="modal fade" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body p-4">
+                    <div class="text-center">
+                        <i class="dripicons-warning h1 text-warning"></i>
+                        <h4 class="mt-2">受保护的文章</h4>
+                        <p class="mt-3">
+                            <input v-model="password.text" v-on:keyup.enter="toPasswordArticle()" type="password" class="customize-input form-control" placeholder="请输入访问密码">
+                        </p>
+                        <button v-on:click="toPasswordArticle()" type="button" class="btn btn-warning w-100 mt-1">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</teleport>
+[[end]]

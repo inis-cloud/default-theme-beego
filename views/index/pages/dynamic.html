@@ -1,0 +1,276 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+动态 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+<link rel="stylesheet" href="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css?v=[[.inis.version]]">
+<link rel="stylesheet" href="/assets/libs/highlight/index.css?v=[[.inis.version]]">
+<link rel="stylesheet" href="https://cdn.inis.cc/comm/libs/vditor/dist/index.css?v=[[.inis.version]]">
+[[end]]
+
+[[define "script"]]
+<script src="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js?v=[[.inis.version]]"></script>
+<script src="/assets/libs/highlight/index.js?v=[[.inis.version]]"></script>
+<script src="https://cdn.inis.cc/comm/libs/vditor/dist/index.min.js?v=[[.inis.version]]"></script>
+<script src="/assets/js/pages/index/dynamic.js?v=[[.inis.version]]"></script>
+[[end]]
+
+[[define "content"]]
+<div id="dynamic" class="container-xxl mw-100v mw-lg-65v px-0">
+    <div class="card">
+        <div class="card-body p-0 circle-after">
+            <img src="[[.config.Data.opt.other.images.cross_bg]]" height="300" class="w-100 img-cover img-h-auto">
+            <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
+                <div class="d-flex align-self-start">
+                    <img class="d-flex align-self-start rounded me-2" src="[[.config.Data.opt.basic.site.head_img]]" alt="Dominic Keller" height="48">
+                    <div class="w-100 overflow-hidden">
+                        <h4 class="text-white subscript-left before-info cursor m-0">[[.config.Data.opt.basic.site.nickname]]</h4>
+                        <p class="text-white mb-0">[[.config.Data.opt.basic.site.present]]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div v-if="isLogin" class="card">
+                <div class="card-body first-comment-box">
+                    <comment-box :config="{ type:'moving',opt: {like:1} }" v-on:finish="finish"></comment-box>
+                </div>
+            </div>
+            <div v-if="!empty(items.data)" class="item markdown comments">
+                <div v-for="(item, index) in items.data" :key="index" class="card">
+                    <div class="card-body pb-1">
+                    <div class="d-flex">
+                        <img class="me-2 rounded" :src="item?.expand?.user?.head_img" height="32">
+                        <div class="w-100">
+                            <div class="dropdown float-end text-muted">
+                                <a :id="'dropdown-' + item.id" href="javascript:;" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                    <i class="mdi mdi-dots-horizontal"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a v-on:click="handle('share', item.id)" href="javascript:;" class="dropdown-item">分享</a>
+                                    <a v-if="isLogin" v-on:click="handle('edit', item.id)" href="javascript:;" class="dropdown-item">编辑</a>
+                                    <a v-if="isLogin && delId != item.id" v-on:click="handle('del', item.id)" href="javascript:;" class="dropdown-item">删除</a>
+                                    <a v-if="isLogin && delId == item.id" v-on:click="deleteComment(item.id)" href="javascript:;" class="dropdown-item text-danger">确定删除</a>
+                                </div>
+                            </div>
+                            <h5 class="m-0">{{item?.expand?.user?.nickname}}</h5>
+                            <p class="text-muted">
+                                <small>
+                                    发布于
+                                    <i class="mdi mdi-circle-medium"></i>
+                                    {{nature(item.create_time)}}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="m-0">
+
+                    <!-- 显示动态 - 开始 -->
+                    <div v-if="item.id != editId" v-highlight v-imagebox v-html="item.expand.html" class="text-dark my-3 html">
+                    </div>
+                    <!-- 显示动态 - 结束 -->
+
+                    <!-- 修改动态 - 开始 -->
+                    <div v-else class="card my-3">
+                        <div class="card-body first-comment-box">
+                            <comment-box :config="{ mode:'edit', id: item.id, content: item.content }"
+                                 v-on:finish="finish" v-on:cancel="cancel" btn="保存"
+                                 placeholder="说点什么吧 (支持Mackdown语法！) * ... ... ">
+                            </comment-box>
+                        </div>
+                    </div>
+                    <!-- 修改动态 - 结束 -->
+
+                    <hr class="m-0">
+
+                    <div class="my-1">
+                        <a v-on:click="like(item.id)" href="javascript:;" class="btn btn-sm btn-link text-muted ps-0">
+                            <i :class="'mdi mdi-heart me-1 ' + (likes.includes(item.id) ? 'text-danger' : '')"></i>
+                            <span>{{item?.opt?.like || 1}}</span>
+                        </a>
+                        <a v-on:click="openCommentBox(item)" href="javascript:;" class="btn btn-sm btn-link text-muted">
+                            <i class="uil uil-comments-alt me-1"></i>
+                            <span>{{item?.son?.length || 0}}</span>
+                        </a>
+                        <a v-on:click="next()" href="javascript:;" class="btn btn-sm btn-link text-muted">
+                            <i class="uil uil-share-alt me-1"></i>
+                            分享
+                        </a>
+                    </div>
+
+                    <div v-if="commentBox.id == item.id" class="card">
+                        <div class="card-body first-comment-box">
+                            <comment-box :config="{ type:'moving', opt: {like:0}, pid: item.id }"
+                                :placeholder="'回复 @' + item?.expand?.user?.nickname || item?.nickname"
+                                v-on:finish="finish" v-on:cancel="cancel">
+                            </comment-box>
+                        </div>
+                    </div>
+
+                    <hr v-if="!empty(item.son)" class="m-0">
+
+                    <div v-if="!empty(item.son)" class="mt-3">
+                        <div v-for="(son, index) in item.son" :key="index" class="d-flex my-2">
+                            <img :src="son?.expand?.head_img" class="me-2 rounded" height="32">
+                            <div>
+                                <h5 class="m-0">{{son?.expand?.user?.nickname}}</h5>
+                                <p class="text-muted mb-0">
+                                    <small>{{nature(son.create_time)}}</small>
+                                </p>
+
+                                <p v-html="son.expand.html" class="font-14 my-1 html"></p>
+
+                                <div>
+                                    <a v-on:click="like(son.id)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0">
+                                        <i :class="'mdi mdi-heart me-1 ' + (likes.includes(son.id) ? 'text-danger' : '')"></i>
+                                        <span>{{son?.opt?.like || 0}}</span>
+                                    </a>
+                                    <a v-on:click="openCommentBox(son)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0 ps-2">
+                                        <i class="uil uil-comments-alt me-1"></i>
+                                        <span>回复</span>
+                                    </a>
+                                </div>
+
+                                <div v-if="commentBox.id == son.id" class="card mt-2">
+                                    <div class="card-body first-comment-box">
+                                        <comment-box :config="{ type:'moving', opt: {like:0}, pid: son.id }"
+                                             :placeholder="'回复 @' + son?.expand?.user?.nickname || son?.nickname"
+                                             v-on:finish="finish" v-on:cancel="cancel">
+                                        </comment-box>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                </div>
+            </div>
+            <div v-else class="card">
+                <div class="card-body">
+                    <div class="text-center">无动态！站长登录后可以发布动态</div>
+                </div>
+            </div>
+
+            <!-- 加载更多 - 开始 -->
+            <div class="text-center my-3">
+                <span v-if="!page.end" v-on:click="getComments(page.code + 1)" class="cursor opacity-06 opacity-hover-10 see-more">
+                    <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                    <span class="font-11 text-muted">{{page.load ? '加载中 ...' : '加载更多'}}</span>
+                </span>
+                <span v-else class="cursor opacity-06 opacity-hover-10 see-more">
+                    <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                    <span class="font-11 text-muted">没有更多内容了</span>
+                </span>
+            </div>
+            <!-- 加载更多 - 结束 -->
+
+        </div>
+        <div class="col-lg-4">
+            <!-- 站长信息 - 开始 -->
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="d-flex align-self-start">
+                        <img class="d-flex align-self-start rounded me-2" src="[[.config.Data.opt.basic.site.head_img]]" alt="Dominic Keller" height="48">
+                        <div class="w-100 overflow-hidden">
+                            <h5 class="mt-1 mb-0">[[.config.Data.opt.basic.site.nickname]]</h5>
+                            <p class="mb-1 mt-1 text-muted line-1">[[.config.Data.opt.basic.site.present]]</p>
+                        </div>
+                    </div>
+
+                    <div class="row text-center py-2">
+                        <div class="col-3">
+                            <div class="fw-normal">
+                                <span>动态</span>
+                            </div>
+                            <p class="text-muted mb-0">{{format(count?.moving?.count || 0)}}</p>
+                        </div>
+                        <div class="col-3">
+                            <div class="fw-normal">
+                                <span>留言</span>
+                            </div>
+                            <p class="text-muted mb-0">{{format(count?.moving?.comment || 0)}}</p>
+                        </div>
+                        <div class="col-3">
+                            <div class="fw-normal">
+                                <span>访问</span>
+                            </div>
+                            <p class="text-muted mb-0">{{format(count?.other?.views || 0)}}</p>
+                        </div>
+                        <div class="col-3">
+                            <div class="fw-normal">
+                                <span>用户</span>
+                            </div>
+                            <p class="text-muted mb-0">{{format(count?.users?.count || 0)}}</p>
+                        </div>
+                    </div>
+
+                    <div class="list-group list-group-flush">
+                        <a v-if="!empty(webmaster.qq)" href="javascript:;" class="list-group-item list-group-item-action border-0">
+                            <i class="mdi mdi-qqchat me-1"></i>
+                            QQ：{{webmaster.qq}}
+                        </a>
+                        <a v-if="!empty(webmaster.wechat)" href="javascript:;" class="list-group-item list-group-item-action border-0">
+                            <i class="mdi mdi-wechat me-1"></i>
+                            微信：{{webmaster.wechat}}
+                        </a>
+                        <a v-if="!empty(webmaster.github)" :href="'//github.com/' + webmaster.github" target="_blank" class="list-group-item list-group-item-action border-0">
+                            <i class="mdi mdi-github me-1"></i>
+                            GitHub：{{webmaster.github}}
+                        </a>
+                        <a v-if="!empty(webmaster.gitee)" :href="'//gitee.com/' + webmaster.gitee" target="_blank" class="list-group-item list-group-item-action border-0">
+                            <i class="mdi mdi-code-greater-than-or-equal me-1"></i>
+                            Gitee：{{webmaster.gitee}}
+                        </a>
+                        <a v-if="!empty(webmaster.weibo)" :href="'//weibo.com/' + webmaster.weibo" target="_blank" class="list-group-item list-group-item-action border-0">
+                            <i class="mdi mdi-sina-weibo me-1"></i>
+                            weibo：{{webmaster.weibo}}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- 站长信息 - 结束 -->
+            <!-- 一言 - 开始 -->
+            <p v-if="!empty(hitokoto.data)" class="ml-3 mb-2">
+                <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+                <span class="font-16 text-dark">一言</span>
+            </p>
+            <div v-if="!empty(hitokoto.data)" class="card mb-2">
+                <div class="card-body">
+                    <div class="card-widgets">
+                        <a v-on:click="runHitokoto()" href="javascript:;"><i class="mdi mdi-refresh"></i></a>
+                        <a data-bs-toggle="collapse" href="#hitokoto" role="button" aria-expanded="true" aria-controls="hitokoto"><i class="mdi mdi-minus"></i></a>
+                        <a href="javascript:;" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                    </div>
+                    <h5 class="card-title mb-0"># {{hitokoto.data.from || '来自'}} #</h5>
+                    <div id="hitokoto" class="pt-3 collapse show">
+                        <div>
+                            {{hitokoto.data.hitokoto || '内容'}}
+                        </div>
+                        <div v-show="!empty(hitokoto.data.from_who)" class="float-end">
+                            作者：{{hitokoto.data.from_who || '作者'}}
+                        </div>
+                    </div>
+                </div>
+                <div v-if="hitokoto.load" class="card-disabled opacity-07">
+                    <div class="card-portlets-loader"></div>
+                </div>
+            </div>
+            <!-- 一言 - 结束 -->
+        </div>
+    </div>
+</div>
+[[end]]

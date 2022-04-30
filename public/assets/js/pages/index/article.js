@@ -8,6 +8,10 @@
                     load: false
                 },
                 directory: [],
+                runtime: null,
+                base64:{
+                    load: false,
+                }
             }
         },
         components: {
@@ -77,6 +81,48 @@
                     this.directory = inisHelper.array.to.tree(map)
                 }
             },
+            // 创建海报
+            createPoster(){
+                $('#poster-alert-modal').modal('show')
+                // 清空canvas
+                this.$refs.qrcode.innerHTML = null
+                const qrcode = new QRCode(this.$refs.qrcode, {
+                    text: window.location.href,
+                    width: 70,
+                    height: 70,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            },
+            // 创建画布
+            createCanvas(){
+                html2canvas(this.$refs.canvas).then(canvas => {
+                    // let aTag = document.createElement('a')
+                    // aTag.download = this.$refs.cover.title + '.png'
+                    // aTag.href     = canvas.toDataURL("image/png")
+                    // aTag.dataset.downloadurl = [aTag.download, aTag.href].join(':')
+                    // document.body.appendChild(aTag)
+                    // aTag.click()
+                    // document.body.removeChild(aTag)
+                    canvas.style.setProperty('object-fit','cover')
+                    document.querySelector('#poster-alert-modal .modal-content').appendChild(canvas)
+                });
+            },
+            // 判断字符串是否是base64图片
+            isBase64Image(string){
+                const  reg = /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@\/?%\s]*?)\s*$/i;
+                return reg.test(string)
+            },
+            // 更新分享的图片
+            uploadChange(){
+                const file = this.$refs.inputFile.files[0]
+                if (file) {
+                    inisHelper.image.base64(file).then(res => {
+                        this.$refs.cover.src = res
+                    })
+                }
+            },
             // 定位
             toTarget: id => $("html,body").animate({scrollTop: $(`#${id}`).offset().top - 200}, 1),
             // 路由跳转
@@ -92,6 +138,18 @@
             highlight: {
                 // 在base.js封装了公共方法
                 mounted: (el) => directives.highlight(el)
+            },
+            base64: {
+                // 在base.js封装了公共方法
+                mounted: (el, binding) => {
+                    if (!binding.instance.isBase64Image(el.src)) {
+                        Get('other/base64', {
+                            url: el.src
+                        }).then(res => {
+                            if (res.code == 200) el.src = res.data.base64
+                        })
+                    }
+                },
             }
         },
         computed: {

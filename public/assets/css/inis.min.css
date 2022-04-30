@@ -1060,3 +1060,29 @@ body[data-leftbar-compact-mode=condensed]:not(.authentication-bg) {
     width: 20px!important;
     height: 20px!important;
 }
+.circle-after{position: relative;}
+.circle-after::after {
+    display: block;
+    clear: both;
+    content: " ";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    background-color: rgba(255 255 255 / 80%);
+    z-index: 99;
+}
+#dynamic .item .card-body .html > p{margin: .375rem auto!important}
+#dynamic .item .card-body .text-dark.html > p:first-child::before {
+    content: "\F0757";
+    font-size: 20px;
+    margin-right: 2px;
+    display: inline-block;
+    font: normal normal normal 24px/1 "Material Design Icons";
+    text-rendering: auto;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
