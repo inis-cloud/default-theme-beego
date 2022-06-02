@@ -2017,10 +2017,10 @@ class helper{
         // 默认配置
         const opt = {
             method:'POST',
-            headers:{
+            headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body:(typeof params === 'object') ? (new helper).stringfy(params) : params
+            body: (typeof params === 'object') ? (new helper).stringfy(params) : params
         }
 
         // 合并配置
@@ -2030,10 +2030,26 @@ class helper{
             else opt[item] = config[item]
         }
 
+        // 文件上传
+        if (opt.headers['Content-Type'].indexOf('multipart/form-data') > -1) {
+
+            delete opt.headers['Content-Type']
+
+            // 判断params是否为FormData数据
+            if (params instanceof FormData) opt.body = params
+            else {
+                opt.body = new FormData()
+                for (let item in params) {
+                    opt.body.append(item, params[item])
+                }
+            }
+        }
+
         const response = await fetch(url, opt)
 
         return await response.json();
     }
+
 
     /**
      *
@@ -2046,11 +2062,11 @@ class helper{
     {
         // 默认配置
         const opt = {
-            method:'PUT',
-            headers:{
+            method:'POST',
+            headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body:(typeof params === 'object') ? (new helper).stringfy(params) : params
+            body: (typeof params === 'object') ? (new helper).stringfy(params) : params
         }
 
         // 合并配置
@@ -2058,6 +2074,21 @@ class helper{
             if (item == 'headers')     opt[item] = {...opt[item], ...config[item]}
             else if (item == 'method') opt[item] = config[item].toUpperCase()
             else opt[item] = config[item]
+        }
+
+        // 文件上传
+        if (opt.headers['Content-Type'].indexOf('multipart/form-data') > -1) {
+
+            delete opt.headers['Content-Type']
+
+            // 判断params是否为FormData数据
+            if (params instanceof FormData) opt.body = params
+            else {
+                opt.body = new FormData()
+                for (let item in params) {
+                    opt.body.append(item, params[item])
+                }
+            }
         }
 
         const response = await fetch(url, opt)
@@ -2076,11 +2107,11 @@ class helper{
     {
         // 默认配置
         const opt = {
-            method:'DELETE',
-            headers:{
+            method:'POST',
+            headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body:(typeof params === 'object') ? (new helper).stringfy(params) : params
+            body: (typeof params === 'object') ? (new helper).stringfy(params) : params
         }
 
         // 合并配置
@@ -2088,6 +2119,21 @@ class helper{
             if (item == 'headers')     opt[item] = {...opt[item], ...config[item]}
             else if (item == 'method') opt[item] = config[item].toUpperCase()
             else opt[item] = config[item]
+        }
+
+        // 文件上传
+        if (opt.headers['Content-Type'].indexOf('multipart/form-data') > -1) {
+
+            delete opt.headers['Content-Type']
+
+            // 判断params是否为FormData数据
+            if (params instanceof FormData) opt.body = params
+            else {
+                opt.body = new FormData()
+                for (let item in params) {
+                    opt.body.append(item, params[item])
+                }
+            }
         }
 
         const response = await fetch(url, opt)
@@ -2106,11 +2152,11 @@ class helper{
     {
         // 默认配置
         const opt = {
-            method:'PATCH',
-            headers:{
+            method:'POST',
+            headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body:(typeof params === 'object') ? (new helper).stringfy(params) : params
+            body: (typeof params === 'object') ? (new helper).stringfy(params) : params
         }
 
         // 合并配置
@@ -2118,6 +2164,21 @@ class helper{
             if (item == 'headers')     opt[item] = {...opt[item], ...config[item]}
             else if (item == 'method') opt[item] = config[item].toUpperCase()
             else opt[item] = config[item]
+        }
+
+        // 文件上传
+        if (opt.headers['Content-Type'].indexOf('multipart/form-data') > -1) {
+
+            delete opt.headers['Content-Type']
+
+            // 判断params是否为FormData数据
+            if (params instanceof FormData) opt.body = params
+            else {
+                opt.body = new FormData()
+                for (let item in params) {
+                    opt.body.append(item, params[item])
+                }
+            }
         }
 
         const response = await fetch(url, opt)

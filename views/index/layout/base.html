@@ -2,15 +2,19 @@
 <html lang="zh">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
     <title>[[template "title" .]]</title>
+    <!--让IE使用最新的渲染模式，支持CSS3-->
+    <meta http-equiv="X-UA-Compatible" content="IE-edge,chrome=1">
+
     [[template "meta" .]]
 
     <link rel="shortcut icon" href="[[.config.Data.opt.basic.site.favicon]]">
 
     <link href="/assets/css/icons.min.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
     <link href="/assets/css/app-modern.min.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
-
     <link href="/assets/css/inis.media.css?v=[[.inis.version]]" rel="stylesheet" type="text/css">
 
     <script src="/assets/libs/vue3.js?v=[[.inis.version]]"></script>

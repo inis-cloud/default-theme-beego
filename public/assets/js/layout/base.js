@@ -1,7 +1,7 @@
 // 发起GET请求
 const Get = (url = '', params = {}, config = {}) => {
     // 定义 Token
-    const headers  = {token:INIS?.token}
+    const headers  = {token:INIS.token}
     // 合并 headers 数据
     config.headers = {...headers, ...config?.headers}
     return inisHelper.fetch.get(INIS.api + url, params, config)
@@ -10,9 +10,9 @@ const Get = (url = '', params = {}, config = {}) => {
 // 发起POST请求
 const Post = (url = '', params = {}, config = {}) => {
     // 定义 Token
-    const headers  = {token:INIS?.token}
+    const headers  = {token:INIS.token}
     // 合并 headers 数据
-    config.headers = {...headers, ...config?.headers}
+    config.headers = {...headers, ...config.headers}
     return inisHelper.fetch.post(INIS.api + url, params, config)
 }
 
@@ -353,7 +353,7 @@ const components = {
                         <button v-else type="button" class="btn btn-outline-info btn-sm float-end" disabled>
                             <div class="spinner-border text-light is-load me-1" role="status"></div> 发送中 ...
                         </button>
-                        <button v-if="!empty(placeholder)" v-on:click="cancel()" type="button" class="btn btn-outline-danger btn-sm float-end me-2">取消</button>
+                            <button v-if="!empty(placeholder)" v-on:click="cancel()" type="button" class="btn btn-outline-danger btn-sm float-end me-2">取消</button>
                     </div>
                 </div>`,
         }
@@ -531,6 +531,270 @@ const components = {
             </div>
             `
         }
+    },
+    // vditor编辑器框
+    vditorBox: () => {
+        return {
+            data(){
+                return {
+                    vditor: {},
+                    is: {
+                        load : false,       // 加载中
+                        login: false,       // 已登录
+                    },
+                    emoji: {},
+                    show: {
+                        vditor: false,      // vditor 显示
+                    },
+                    configs: {
+                        content: '',
+                        btnText: '发表',
+                        text: {
+                            send: '发表',
+                            load: '发送中 ...',
+                        },
+                        placeholder: '说点什么吧 (支持Mackdown语法！) * ... ... ',
+                    },
+                }
+            },
+            props: {
+                config: {
+                    type: Object,
+                    default: {
+                        content: '',
+                        btnText: '发表',
+                        text: {
+                            send: '发表',
+                            load: '发送中 ...',
+                        },
+                        placeholder: '说点什么吧 (支持Mackdown语法！) * ... ... ',
+                    }
+                },
+            },
+            mounted(){
+                this.configs = inisHelper.object.deep.merge(this.configs, this.config);
+            },
+            methods:{
+                hasEmoji(el, config = {}, binding){
+                    const cache = 'emoji'
+                    // 本地存在缓存
+                    if (inisHelper.has.session(cache)) {
+                        this.emoji = inisHelper.get.session(cache)
+                        setTimeout(() => {
+                            this.initVditor(el, config)
+                        }, 200)
+                    }
+                    // 不存在缓存，从服务器端获取
+                    else this.initEmoji(el, config)
+                    this.binding = binding
+                },
+                initEmoji(el, config = {}){
+                    const cache = 'emoji'
+                    Get('emoji').then((res) => {
+                        if (res.code == 200) {
+                            this.emoji = res.data
+                            inisHelper.set.session(cache, res.data)
+                            this.initVditor(el, config)
+                        }
+                    }).catch(err=>{
+                        this.initEmoji(el, config)
+                    })
+                },
+                // 初始化编辑器
+                initVditor(el, config = {}){
+                    let options = {
+                        value: this.configs.content,
+                        cdn: 'https://cdn.inis.cc/comm/libs/vditor',
+                        height: 200,
+                        minHeight: 200,
+                        placeholder: this.configs.placeholder || '说点什么吧 (支持Mackdown语法！) * ... ... ',
+                        mode: 'wysiwyg',
+                        icon: 'material',           // 图标风格
+                        toolbarConfig: {
+                            pin: true,              // 固定工具栏
+                        },
+                        cache: {
+                            enable: false,          // 关闭缓存
+                        },
+                        counter: {
+                            enable: true,           // 启用计数器
+                        },
+                        resize: {
+                            enable: true,           // 支持主窗口大小拖拽
+                        },
+                        preview: {
+                            hljs: {
+                                enable: true,       // 启用代码高亮
+                                lineNumber: true,   // 启用行号
+                            },
+                            math: {
+                                engine: 'MathJax',
+                            }
+                        },
+                        // 编辑器异步渲染完成后的回调方法
+                        after: () => {
+                            this.show.vditor = true
+                        },
+                        // 快捷键
+                        ctrlEnter: () => {
+                            this.check()
+                        },
+                        hint: {
+                            emoji: this.emoji,
+                        },
+                        upload: {
+                            accept: 'image/*, video/*',
+                            multiple: false,
+                            // 上传失败自定义方法
+                            handler: (files) => {
+
+                                // window.vditor.tip('上传中...', 2000)
+                                //
+                                // let params = new FormData
+                                // params.append('file', ...files)
+                                // params.append('mode', 'file')
+                                //
+                                // axios.post('/admin/handle/upload', params, {
+                                //     headers: {
+                                //         "Content-Type": "multipart/form-data"
+                                //     }
+                                // }).then((res) => {
+                                //     if (res.data.code == 200) {
+                                //
+                                //         let result = res.data.data
+                                //         if (this.checkFile(result) == 'image') {
+                                //             window.vditor.insertValue(`![](${result})`)
+                                //         } else if (this.checkFile(result) == 'video') {
+                                //             window.vditor.insertValue(`<video src="${result}" controls>Not Support</video>`)
+                                //         } else {
+                                //             window.vditor.insertValue(`${result}`)
+                                //         }
+                                //
+                                //         window.vditor.tip('上传完成！', 2000)
+                                //
+                                //     } else {
+                                //         window.vditor.tip(res.data.msg, 2000)
+                                //     }
+                                // })
+                            },
+                            filename: (name) => {
+                                return name.replace(/[^(a-zA-Z0-9\u4e00-\u9fa5\.)]/g, "")
+                                    .replace(/[\?\\/:|<>\*\[\]\(\)\$%\{\}@~]/g, "")
+                                    .replace("/\\s/g", "");
+                            },
+                        },
+                        toolbar: [
+                            "emoji","headings","bold","italic","strike","link",
+                            "|",
+                            "list","ordered-list","check","outdent","indent",
+                            "|",
+                            "quote","line","code","inline-code","insert-before","insert-after",
+                            "|","table",
+                            {
+                                hotkey: "",
+                                name: "album",
+                                tipPosition: "s",
+                                tip: "插入相册",
+                                className: "right",
+                                icon: `<img src='/assets/svg/album.svg' height="16">`,
+                                click: () => {
+                                    this.vditor.insertValue('[album]\n支持Markdown格式和HTML格式的图片\n[/album]')
+                                }
+                            },
+                            "edit-mode","help",
+                            "|",
+                            "undo","redo",
+                        ],
+                    }
+                    // 对象深度合并
+                    config = inisHelper.object.deep.merge(options, config)
+                    this.vditor   = new Vditor(el, config)
+                    window.vditor = this.vditor
+                },
+                // 前置校验
+                check(){
+                    if (inisHelper.is.empty(this.vditor.getValue())) Notify('您可以说点什么哟~','warning')
+                    else {
+                        // 登录后评论
+                        if (this.userInfo.login) this.send()
+                        // 未登录评论
+                        else Notify('请先登录！','warning')
+                    }
+                },
+                // 发送评论
+                send(){
+                    // 加载中
+                    this.is.load = true
+                    this.$emit('finish', {
+                        content: inisHelper.html2md(this.vditor.getHTML()),
+                        binding: this.binding,
+                    })
+                },
+                // 取消评论
+                cancel(){
+                    this.$emit('cancel', {
+                        content: inisHelper.html2md(this.vditor.getHTML()),
+                        binding: this.binding,
+                    })
+                },
+                // 上下文
+                context(){
+                    return this
+                },
+                // 判断是否为空
+                empty: (data) => inisHelper.is.empty(data),
+            },
+            directives: {
+                vditor: {
+                    // 初始化指令
+                    mounted(el, binding) {
+                        binding.instance.hasEmoji(el, {
+                            height: inisHelper.is.mobile() ? 800 : 500,
+                            minHeight: inisHelper.is.mobile() ? 800 : 500,
+                        }, binding)
+                    },
+                    // 注销指令
+                    unmounted(el, binding) {
+                        window.vditor.destroy()
+                    },
+                }
+            },
+            computed: {
+                userInfo(){
+                    let result = {
+                        data : {},
+                        token: null,
+                        login: false
+                    }
+                    if (inisHelper.has.cookie('LOGIN-TOKEN')) {
+                        result = {
+                            data : inisHelper.get.session('USER-INFO'),
+                            token: inisHelper.get.cookie('LOGIN-TOKEN'),
+                            login: true
+                        }
+                    } else result.login = false
+                    return result
+                }
+            },
+            template: `<div v-if="!show.vditor" class="flex-center">
+                    <div class="spinner-border text-light m-2 wh-16px" role="status"></div>
+                    Vditor 编辑器加载中 ... 
+                </div>
+                <div v-show="show.vditor" v-vditor></div>
+                <div v-if="show.vditor" class="row pt-2">
+                    <!-- 发表评论 -->
+                    <div class="col-lg-12">
+                        <button v-if="!is.load" v-on:click="check()" type="button" class="btn btn-outline-info btn-sm float-end">
+                            <i class="mdi mdi-star-outline mdi-spin"></i> {{configs.text.send || '发表'}}
+                        </button>
+                        <button v-else type="button" class="btn btn-outline-info btn-sm float-end" disabled>
+                            <div class="spinner-border text-light is-load me-1" role="status"></div> {{configs.text.load || '发送中 ...'}}
+                        </button>
+                        <button v-on:click="cancel()" type="button" class="btn btn-outline-danger btn-sm float-end me-2">取消</button>
+                    </div>
+                </div>`,
+        }
+
     },
 }
 

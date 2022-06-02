@@ -353,6 +353,9 @@ code ::selection{background:rgba(52,68,73,var(--inis-opacity));color:#fff;text-s
 .mw-65v{max-width: 65vw!important;}
 .mw-100v{max-width: 100vw!important;}
 
+.radius-50{border-radius: 50%!important;}
+.text-pink{color: var(--bs-pink)!important;}
+
 a.badge:focus,a.badge:hover{text-decoration:none}
 .badge:empty{display:none}
 .btn .badge{position:relative;top:-1px}
@@ -1085,4 +1088,42 @@ body[data-leftbar-compact-mode=condensed]:not(.authentication-bg) {
     line-height: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+#lovers .tabs.nav-tabs{
+    border-bottom: unset!important;
+}
+#lovers .tabs.nav-tabs .nav-link{
+    border: unset!important;
+}
+#lovers .tabs .tab-pane.card, #lovers .tabs.nav-tabs .nav-link.active, #lovers #bless .card:first-child{
+    box-shadow: 6px 20px 20px 0px rgb(154 161 171 / 15%) !important;
+    -webkit-box-shadow: 6px 20px 20px 0px rgb(154 161 171 / 15%) !important;
+}
+#lovers .markdown.comments .html > p{margin: .375rem auto!important}
+#lovers #video{
+    object-fit: cover;
+    height: 300px;
+    width: 100%;
+}
+#lovers #video source{
+    min-width: 100%;
+    min-height: 100%;
+    height: auto;
+    width: auto;
+}
+.w-60px{width: 60px!important;}
+.shadow-sm {
+    -webkit-box-shadow: 0 0 35px 0 rgb(154 161 171 / 15%) !important;
+    box-shadow: 0 0 35px 0 rgb(154 161 171 / 15%) !important;
+    border: 3px #fff solid;
+}
+#lovers .mdi-volume-mute, #lovers .mdi-volume-high{
+    position: absolute;
+    top: 0;
+    z-index: 999;
+    left: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
 }

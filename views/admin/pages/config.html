@@ -156,6 +156,43 @@
                     </div>
                 </div>
                 <div class="card mb-1">
+                    <div class="card-header" id="config-other-feature">
+                        <h5 class="m-0">
+                            <a class="custom-accordion-title d-block pt-2 pb-2"
+                               data-bs-toggle="collapse" href="#config-other-feature-content"
+                               aria-expanded="true" aria-controls="config-other-feature-content">
+                                # 特色
+                                <span class="text-muted font-13">（动态、搜索、友链库和情侣空间等）</span>
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="config-other-feature-content" class="collapse show" aria-labelledby="config-other-feature" data-bs-parent="#config-other">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <p class="mb-0 flex">
+                                            <span>动态：</span>
+                                            <input v-model="config.other.feature.dynamic" type="checkbox" id="is-dynamic" data-switch="success">
+                                            <label for="is-dynamic" data-on-label="Yes" data-off-label="No"></label>
+                                            <span class="ms-2">搜索：</span>
+                                            <input v-model="config.other.feature.search" type="checkbox" id="is-search" data-switch="success">
+                                            <label for="is-search" data-on-label="Yes" data-off-label="No"></label>
+                                            <span class="ms-2">友链库：</span>
+                                            <input v-model="config.other.feature.links" type="checkbox" id="is-links" data-switch="success">
+                                            <label for="is-links" data-on-label="Yes" data-off-label="No"></label>
+                                            <span class="ms-2">情侣空间：</span>
+                                            <input v-model="config.other.feature.lovers" type="checkbox" id="is-lovers" data-switch="success">
+                                            <label for="is-lovers" data-on-label="Yes" data-off-label="No"></label>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
                     <div class="card-header" id="config-other-image">
                         <h5 class="m-0">
                             <a class="custom-accordion-title collapsed d-block pt-2 pb-2"

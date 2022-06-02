@@ -65,6 +65,12 @@
         },
         "copy": {
             "text"        :  "您复制了inis系统的内容\n网址：https://inis.cn"
+        },
+        "feature": {
+            "dynamic": true,
+            "search": true,
+            "links": true,
+            "lovers": true
         }
     },
     "developer": {

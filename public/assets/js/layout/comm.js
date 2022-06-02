@@ -116,7 +116,9 @@
                 link: {
                     data: [],
                     show: false
-                }
+                },
+                // 需要被排除的页面
+                exclude: ['lovers'],
             }
         },
         mounted() {
@@ -131,11 +133,12 @@
                 this.hasLink()
             },
             // 检查本地缓存
-            hasConfig(){
+            async hasConfig(){
                 const cache = 'theme-config-beego'
+                const defaultConfig = await inisHelper.fetch.get('/assets/json/config.json')
                 // 本地存在缓存
                 if (inisHelper.has.session(cache)) {
-                    this.config = inisHelper.get.session(cache)
+                    this.config = inisHelper.object.deep.merge(defaultConfig, inisHelper.get.session(cache))
                     // 设置菜单信息
                     this.setMenu()
                     this.setCode()
@@ -144,13 +147,14 @@
                 else this.getConfig()
             },
             // 获取服务器配置
-            getConfig(){
+            async getConfig(){
+                const defaultConfig = await inisHelper.fetch.get('/assets/json/config.json')
                 Get('options',{
                     key:'config:default-theme-beego'
                 }).then(res=>{
                     if (res.code == 200) {
                         const result = res.data.opt
-                        this.config  = result
+                        this.config  = inisHelper.object.deep.merge(defaultConfig, result)
                         inisHelper.set.session('theme-config-beego',result)
                     } else this.getDefaultConfig()
                     // 设置菜单信息
@@ -295,7 +299,12 @@
             // 判断是否为空
             empty(data = null){
                 return inisHelper.is.empty(data)
-            }
+            },
+            // 判断是否True
+            isTrue: (data = null) => inisHelper.is.true(data),
+        },
+        watch: {
+
         }
     }).mount('#left-side')
 

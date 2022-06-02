@@ -1,0 +1,294 @@
+[[template "index/layout/base.html" .]]
+
+[[define "title"]]
+情侣空间 - [[.config.Data.opt.basic.site.title]]
+[[end]]
+
+[[define "meta"]]
+<meta name="keywords" content='[[.config.Data.opt.basic.site.keywords]]'>
+<meta name="description" content='[[.config.Data.opt.basic.site.description]]'>
+[[end]]
+
+[[define "head"]]
+<link rel="stylesheet" href="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.css?v=[[.inis.version]]">
+<link rel="stylesheet" href="/assets/libs/highlight/index.css?v=[[.inis.version]]">
+<link rel="stylesheet" href="https://cdn.inis.cc/comm/libs/vditor/dist/index.css?v=[[.inis.version]]">
+[[end]]
+
+[[define "script"]]
+<script src="https://cdn.inis.cc/theme/default/assets/libs/fancybox/jquery.fancybox.min.js?v=[[.inis.version]]"></script>
+<script src="https://cdn.inis.cc/comm/libs/vditor/dist/index.min.js?v=[[.inis.version]]"></script>
+<script src="/assets/libs/highlight/index.js?v=[[.inis.version]]"></script>
+<script src="/assets/js/pages/index/lovers.js?v=[[.inis.version]]"></script>
+<script src="/assets/libs/WriteIt.min.js?v=[[.inis.version]]"></script>
+[[end]]
+
+[[define "content"]]
+<div id="lovers" class="container-xxl mw-100v mw-lg-65v px-0">
+    <div class="card">
+        <div class="card-body p-0 circle-after">
+            <i v-if="videoMuted && item.opt.cover.type == 'video'" v-on:click="muted(false)" class="mdi mdi-volume-mute"></i>
+            <i v-else-if="item.opt.cover.type == 'video'" v-on:click="muted(true)" class="mdi mdi-volume-high"></i>
+            <input v-show="false" v-on:change="uploadChange($event)" type="file" id="cover-input" accept="image/*">
+            <video v-if="item.opt.cover.type == 'video'"
+                   v-on:click="(userInfo.login === true && userInfo.data.level == 'admin') ? uploadFile('#lovers-upload-video-cover') : null"
+                   id="video" autoplay loop muted class="cursor">
+                <source :src="item.opt.cover.video" type="video/mp4">
+            </video>
+            <img v-else v-on:click="(userInfo.login === true && userInfo.data.level == 'admin') ? uploadFile('#lovers-upload-image-cover') : null"
+                 :src="item.opt.cover.image || '/assets/images/empty.png'" height="300" class="w-100 img-cover cursor">
+            <div class="single-cover position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex align-items-center flex-column">
+                        <img :src="item.opt.boy.avatar" class="shadow-sm img-cover radius-50" height="80" width="80">
+                        <span class="text-white fw-bolder">{{item.opt.boy.nickname}}</span>
+                    </div>
+                    <div class="d-flex align-items-center  flex-column">
+                        <img :src="item.opt.girl.avatar" class="shadow-sm img-cover radius-50 ms-lg-n3 ms-n2" height="80" width="80">
+                        <span class="text-white fw-bolder ms-lg-n3 ms-n2">{{item.opt.girl.nickname}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 start-0 end-0 py-2 px-lg-3 px-2">
+                <div class="float-start text-white fw-bolder">
+                    <span>{{days}}天前，</span>
+                    <br>
+                    <span>我们成为了情侣</span>
+                    <br>
+                </div>
+                <div class="float-end text-white fw-bolder">
+                    <span class="float-start">{{time.first}}</span>
+                    <span class="float-end">{{time.second}}</span>
+                    <br>
+                    {{time.date}}
+                </div>
+            </div>
+        </div>
+    </div>
+    [[if eq .item.Code 204]]
+    <div class="card">
+        <div class="card-body flex-center">
+            当前页面未初始化，可以在inis后端新建别名为lovers的页面，或者在本站登录后刷新此页面进行初始化（注意：需要拥有管理员权限的账号进行初始化）
+        </div>
+    </div>
+    [[else if eq .item.Code 200]]
+    <ul class="nav nav-tabs mb-0 tabs">
+        <li class="nav-item">
+            <a href="#lovers-bless" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
+                <span>[[.item.Data.opt.title.first]]</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#lovers-our-story" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
+                <span>[[.item.Data.opt.title.second]]</span>
+            </a>
+        </li>
+        <li v-if="userInfo.login === true && userInfo.data.level == 'admin'" class="nav-item">
+            <a href="#lovers-setting" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
+                <span>配置</span>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content tabs">
+        <div class="tab-pane" id="lovers-bless">
+            <div class="card">
+                <div v-if="!isLogin" class="card-body flex-center">
+                    点击右上角登录后可以为我们送祝福哟！
+                </div>
+                <div v-else class="card-body first-comment-box">
+                    <comment-box :config="{ type:'lovers', opt: {like:1} }" placeholder="为我们送祝福！(支持Mackdown语法！) * ... ..." v-on:finish="blessFinish" btn="祝福"></comment-box>
+                </div>
+            </div>
+            <div class="row markdown comments">
+                <div class="col-lg-7">
+                    <div v-for="(item, index) in bless.data" :key="index" class="card">
+                        <div class="card-body pb-2">
+                            <div class="d-flex mb-2">
+                                <img class="me-2 rounded" :src="item?.expand?.user?.head_img" height="32">
+                                <div class="w-100">
+                                    <h5 class="m-0">{{item?.expand?.user?.nickname}}</h5>
+                                    <p class="text-muted mb-0">
+                                        <small>
+                                            祝福于
+                                            <i class="mdi mdi-circle-medium"></i>
+                                            {{nature(item.create_time)}}
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                            <hr class="m-0">
+                            <!-- 显示动态 - 开始 -->
+                            <div v-highlight v-imagebox v-html="item.expand.html" class="text-dark my-2 html">
+                            </div>
+                            <!-- 显示动态 - 结束 -->
+                        </div>
+                    </div>
+                    <!-- 加载更多 - 开始 -->
+                    <div class="text-center my-3">
+                        <span v-if="!page.end" v-on:click="getBless(page.code + 1)" class="cursor opacity-06 opacity-hover-10 see-more">
+                            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                            <span class="font-11 text-muted">{{page.load ? '加载中 ...' : '加载更多'}}</span>
+                        </span>
+                        <span v-else class="cursor opacity-06 opacity-hover-10 see-more">
+                            <svg t="1646889175602" class="icon more font-11 me-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2056" width="16" height="16"><path d="M512.1024 972.8512A460.83072 460.83072 0 1 1 972.86656 512a461.39392 461.39392 0 0 1-460.76416 460.8512z m0-870.4a409.6 409.6 0 1 0 409.49248 409.6 410.112 410.112 0 0 0-409.4976-409.58976zM685.69088 558.08a51.63008 51.63008 0 0 1-51.58912-51.2 49.03424 49.03424 0 0 1 15.18592-36.05504 49.90464 49.90464 0 0 1 36.352-15.06304 49.31072 49.31072 0 0 1 20.1216 4.096 54.48704 54.48704 0 0 1 16.34816 10.95168 51.97824 51.97824 0 0 1 11.09504 16.21504 48.52736 48.52736 0 0 1 4.02432 19.84512 49.536 49.536 0 0 1-15.05792 36.1728 50.24768 50.24768 0 0 1-36.48 15.03744z m-181.28896-0.05632a49.80736 49.80736 0 0 1-36.4032-15.0016 50.688 50.688 0 0 1-0.06144-72.28928 51.2 51.2 0 0 1 56.46848-10.83392 54.784 54.784 0 0 1 16.34304 10.83392 57.2672 57.2672 0 0 1 11.09504 16.20992 50.6368 50.6368 0 0 1-11.09504 56.07936 49.86368 49.86368 0 0 1-36.34688 14.99136z m-181.47328 0a51.1488 51.1488 0 1 1 0-102.29248 50.4832 50.4832 0 0 1 20.06016 4.096 55.808 55.808 0 0 1 16.2816 10.89024 52.3008 52.3008 0 0 1 10.97216 16.19456 50.176 50.176 0 0 1-10.97728 56.07936 49.86368 49.86368 0 0 1-36.34176 15.02208z" p-id="2057" fill="#8a8a8a"></path></svg>
+                            <span class="font-11 text-muted">没有更多内容了</span>
+                        </span>
+                    </div>
+                    <!-- 加载更多 - 结束 -->
+                </div>
+                <div class="col-lg-5">
+                    <!-- 爱情宣言 - 开始 -->
+                    <div writeit-autostart class="card mb-2">
+                        <div writeit-animate writeit-speed="10" class="card-body">
+                            [[str2html .item.Data.opt.placard]]
+                        </div>
+                    </div>
+                    <!-- 爱情宣言 - 结束 -->
+                    <!-- 一言 - 开始 -->
+                    <p v-if="!empty(hitokoto.data)" class="ml-3 mb-2">
+                        <span class="bullet bullet-vertical bg-danger h-13px mr-2"></span>
+                        <span class="font-16 text-dark">一言</span>
+                    </p>
+                    <div v-if="!empty(hitokoto.data)" class="card mb-2">
+                        <div class="card-body">
+                            <div class="card-widgets">
+                                <a v-on:click="runHitokoto()" href="javascript:;"><i class="mdi mdi-refresh"></i></a>
+                                <a data-bs-toggle="collapse" href="#hitokoto" role="button" aria-expanded="true" aria-controls="hitokoto"><i class="mdi mdi-minus"></i></a>
+                                <a href="javascript:;" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                            </div>
+                            <h5 class="card-title mb-0"># {{hitokoto.data.from || '来自'}} #</h5>
+                            <div id="hitokoto" class="pt-3 collapse show">
+                                <div>
+                                    {{hitokoto.data.hitokoto || '内容'}}
+                                </div>
+                                <div v-show="!empty(hitokoto.data.from_who)" class="float-end">
+                                    作者：{{hitokoto.data.from_who || '作者'}}
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="hitokoto.load" class="card-disabled opacity-07">
+                            <div class="card-portlets-loader"></div>
+                        </div>
+                    </div>
+                    <!-- 一言 - 结束 -->
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane card show active" id="lovers-our-story">
+            <div class="card-body">
+                <div v-show="userInfo.login === true && userInfo.data.level == 'admin' && !isEdit" class="dropdown float-end">
+                    <a href="javascript:;" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="mdi mdi-dots-vertical"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <a v-on:click="isEdit = true" href="javascript:;" class="dropdown-item">编辑</a>
+                    </div>
+                </div>
+                <div v-if="!isEdit" v-highlight v-imagebox writeit-autostart writeit-animate writeit-speed="300" class="markdown preview">
+                    [[str2html .item.Data.content]]
+                </div>
+                <div v-else class="first-comment-box">
+                    <vditor-box :config="config" v-on:finish="finish" v-on:cancel="cancel"></vditor-box>
+                </div>
+            </div>
+        </div>
+        <div v-show="userInfo.login === true && userInfo.data.level == 'admin'" class="tab-pane card" id="lovers-setting">
+            <input v-show="false" v-on:change="uploadChange($event)" type="file" accept="image/*" id="lovers-upload-boy-avatar">
+            <input v-show="false" v-on:change="uploadChange($event)" type="file" accept="image/*" id="lovers-upload-girl-avatar">
+            <input v-show="false" v-on:change="uploadChange($event)" type="file" accept="video/*" id="lovers-upload-video-cover">
+            <input v-show="false" v-on:change="uploadChange($event)" type="file" accept="image/*" id="lovers-upload-image-cover">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label>男孩名字</label>
+                            <input v-model="item.opt.boy.nickname" type="text" class="form-control customize-input" placeholder="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label>男孩头像</label>
+                            <div class="input-group">
+                                <input v-model="item.opt.boy.avatar" type="text" class="form-control customize-input" placeholder="填写图片地址或点击按钮上传图片">
+                                <button v-on:click="uploadFile('#lovers-upload-boy-avatar')" type="button" class="btn btn-dark input-group-text">
+                                    {{(upload.loading === true && upload.el == '#lovers-upload-boy-avatar') ? '上传中 ...' : '上传'}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label>女孩名字</label>
+                            <input v-model="item.opt.girl.nickname" type="text" class="form-control customize-input" placeholder="">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label>女孩头像</label>
+                            <div class="input-group">
+                                <input v-model="item.opt.girl.avatar" type="text" class="form-control customize-input" placeholder="填写图片地址或点击按钮上传图片">
+                                <button v-on:click="uploadFile('#lovers-upload-girl-avatar')" type="button" class="btn btn-dark input-group-text">
+                                    {{(upload.loading === true && upload.el == '#lovers-upload-girl-avatar') ? '上传中 ...' : '上传'}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label>恋爱开始时间</label>
+                            <input v-model="item.opt.loveStartTime" type="text" class="form-control customize-input" placeholder="请用-分隔时间，如：2020-5-20">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-3">
+                            <label>选项卡（1）标题</label>
+                            <input v-model="item.opt.title.first" type="text" class="form-control customize-input" placeholder="">
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group mb-3">
+                            <label>选项卡（2）标题</label>
+                            <input v-model="item.opt.title.second" type="text" class="form-control customize-input" placeholder="">
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="form-group mb-3">
+                            <label>选项卡（1）宣言</label>
+                            <textarea v-model="item.opt.placard" rows="4" class="form-control customize-textarea customize-scroll" placeholder="支持HTML"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 flex-center">
+                        <div class="form-check form-check-inline form-radio-info">
+                            <input v-model="item.opt.cover.type" value="video" type="radio" id="lovers-video-cover" name="lovers-cover" class="form-check-input">
+                            <label class="form-check-label w-60px" for="lovers-video-cover">视频封面</label>
+                        </div>
+                        <div class="form-check form-check-inline form-radio-danger">
+                            <input v-model="item.opt.cover.type" value="image" type="radio" id="lovers-image-cover" name="lovers-cover" class="form-check-input">
+                            <label class="form-check-label w-60px" for="lovers-image-cover">图片封面</label>
+                        </div>
+                        <div v-if="item.opt.cover.type == 'image'" class="input-group">
+                            <input v-model="item.opt.cover.image" type="text" class="form-control customize-input" placeholder="填写图片地址或点击按钮上传">
+                            <button v-on:click="uploadFile('#lovers-upload-image-cover')" type="button" class="btn btn-dark input-group-text">
+                                {{(upload.loading === true && upload.el == '#lovers-upload-image-cover') ? '上传中 ...' : '上传'}}
+                            </button>
+                        </div>
+                        <div v-else class="input-group">
+                            <input v-model="item.opt.cover.video" type="text" class="form-control customize-input" placeholder="填写视频地址或点击按钮上传">
+                            <button v-on:click="uploadFile('#lovers-upload-video-cover')" type="button" class="btn btn-dark input-group-text">
+                                {{(upload.loading === true && upload.el == '#lovers-upload-video-cover') ? '上传中 ...' : '上传'}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <button v-on:click="saveLovers(false)" type="button" class="btn btn-info">
+                    <i class="mdi mdi-content-save-cog me-1"></i>
+                    <span>保存配置</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    [[end]]
+</div>
+[[end]]

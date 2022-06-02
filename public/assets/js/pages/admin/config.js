@@ -5,7 +5,7 @@
                 config: {
                     basic: {site: {copy:{}},style:{background:{},color:{},font:{}}},
                     developer: {code:{html:{}},footer:{},menu:{}},
-                    other: {copy:{},help:{},images:{logo:{day:{},night:{}}},module:{}}
+                    other: {copy:{},help:{},images:{logo:{day:{},night:{}}},module:{},feature:{}}
                 },
             }
         },
@@ -14,14 +14,15 @@
         },
         methods: {
             // 获取主题配置
-            getConfig() {
+            async getConfig() {
+                const defaultConfig = await inisHelper.fetch.get('/assets/json/config.json')
                 Get('options',{
                     key:'config:default-theme-beego'
                 }).then(res=>{
                     if (res.code == 204) {
                         this.initConfig()
                     } else {
-                        this.config = res.data.opt
+                        this.config = inisHelper.object.deep.merge(defaultConfig, res.data.opt)
                     }
                 })
             },
@@ -37,7 +38,7 @@
                     },
                 }).then(res=>{
                     if (res.code == 200) {
-                        this.config = defaultConfig
+                        this.config = inisHelper.object.deep.merge(this.config, defaultConfig)
                         inisHelper.set.session('theme-config-beego', this.config)
                         Notify('初始化主题配置成功', 'success')
                     } else {
@@ -68,7 +69,12 @@
 
         },
         watch: {
-
+            // config: {
+            //     handler(val){
+            //         console.log(this.config.other)
+            //     },
+            //     deep: true
+            // }
         }
     }).mount('#app')
 })()

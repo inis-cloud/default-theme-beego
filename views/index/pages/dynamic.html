@@ -48,114 +48,114 @@
             <div v-if="!empty(items.data)" class="item markdown comments">
                 <div v-for="(item, index) in items.data" :key="index" class="card">
                     <div class="card-body pb-1">
-                    <div class="d-flex">
-                        <img class="me-2 rounded" :src="item?.expand?.user?.head_img" height="32">
-                        <div class="w-100">
-                            <div class="dropdown float-end text-muted">
-                                <a :id="'dropdown-' + item.id" href="javascript:;" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a v-on:click="handle('share', item.id)" href="javascript:;" class="dropdown-item">分享</a>
-                                    <a v-if="isLogin" v-on:click="handle('edit', item.id)" href="javascript:;" class="dropdown-item">编辑</a>
-                                    <a v-if="isLogin && delId != item.id" v-on:click="handle('del', item.id)" href="javascript:;" class="dropdown-item">删除</a>
-                                    <a v-if="isLogin && delId == item.id" v-on:click="deleteComment(item.id)" href="javascript:;" class="dropdown-item text-danger">确定删除</a>
-                                </div>
-                            </div>
-                            <h5 class="m-0">{{item?.expand?.user?.nickname}}</h5>
-                            <p class="text-muted">
-                                <small>
-                                    发布于
-                                    <i class="mdi mdi-circle-medium"></i>
-                                    {{nature(item.create_time)}}
-                                </small>
-                            </p>
-                        </div>
-                    </div>
-
-                    <hr class="m-0">
-
-                    <!-- 显示动态 - 开始 -->
-                    <div v-if="item.id != editId" v-highlight v-imagebox v-html="item.expand.html" class="text-dark my-3 html">
-                    </div>
-                    <!-- 显示动态 - 结束 -->
-
-                    <!-- 修改动态 - 开始 -->
-                    <div v-else class="card my-3">
-                        <div class="card-body first-comment-box">
-                            <comment-box :config="{ mode:'edit', id: item.id, content: item.content }"
-                                 v-on:finish="finish" v-on:cancel="cancel" btn="保存"
-                                 placeholder="说点什么吧 (支持Mackdown语法！) * ... ... ">
-                            </comment-box>
-                        </div>
-                    </div>
-                    <!-- 修改动态 - 结束 -->
-
-                    <hr class="m-0">
-
-                    <div class="my-1">
-                        <a v-on:click="like(item.id)" href="javascript:;" class="btn btn-sm btn-link text-muted ps-0">
-                            <i :class="'mdi mdi-heart me-1 ' + (likes.includes(item.id) ? 'text-danger' : '')"></i>
-                            <span>{{item?.opt?.like || 1}}</span>
-                        </a>
-                        <a v-on:click="openCommentBox(item)" href="javascript:;" class="btn btn-sm btn-link text-muted">
-                            <i class="uil uil-comments-alt me-1"></i>
-                            <span>{{item?.son?.length || 0}}</span>
-                        </a>
-                        <a v-on:click="next()" href="javascript:;" class="btn btn-sm btn-link text-muted">
-                            <i class="uil uil-share-alt me-1"></i>
-                            分享
-                        </a>
-                    </div>
-
-                    <div v-if="commentBox.id == item.id" class="card">
-                        <div class="card-body first-comment-box">
-                            <comment-box :config="{ type:'moving', opt: {like:0}, pid: item.id }"
-                                :placeholder="'回复 @' + item?.expand?.user?.nickname || item?.nickname"
-                                v-on:finish="finish" v-on:cancel="cancel">
-                            </comment-box>
-                        </div>
-                    </div>
-
-                    <hr v-if="!empty(item.son)" class="m-0">
-
-                    <div v-if="!empty(item.son)" class="mt-3">
-                        <div v-for="(son, index) in item.son" :key="index" class="d-flex my-2">
-                            <img :src="son?.expand?.head_img" class="me-2 rounded" height="32">
-                            <div>
-                                <h5 class="m-0">{{son?.expand?.user?.nickname}}</h5>
-                                <p class="text-muted mb-0">
-                                    <small>{{nature(son.create_time)}}</small>
-                                </p>
-
-                                <p v-html="son.expand.html" class="font-14 my-1 html"></p>
-
-                                <div>
-                                    <a v-on:click="like(son.id)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0">
-                                        <i :class="'mdi mdi-heart me-1 ' + (likes.includes(son.id) ? 'text-danger' : '')"></i>
-                                        <span>{{son?.opt?.like || 0}}</span>
+                        <div class="d-flex mb-2">
+                            <img class="me-2 rounded" :src="item?.expand?.user?.head_img" height="32">
+                            <div class="w-100">
+                                <div class="dropdown float-end text-muted">
+                                    <a :id="'dropdown-' + item.id" href="javascript:;" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
-                                    <a v-on:click="openCommentBox(son)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0 ps-2">
-                                        <i class="uil uil-comments-alt me-1"></i>
-                                        <span>回复</span>
-                                    </a>
-                                </div>
-
-                                <div v-if="commentBox.id == son.id" class="card mt-2">
-                                    <div class="card-body first-comment-box">
-                                        <comment-box :config="{ type:'moving', opt: {like:0}, pid: son.id }"
-                                             :placeholder="'回复 @' + son?.expand?.user?.nickname || son?.nickname"
-                                             v-on:finish="finish" v-on:cancel="cancel">
-                                        </comment-box>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a v-on:click="handle('share', item.id)" href="javascript:;" class="dropdown-item">分享</a>
+                                        <a v-if="isLogin" v-on:click="handle('edit', item.id)" href="javascript:;" class="dropdown-item">编辑</a>
+                                        <a v-if="isLogin && delId != item.id" v-on:click="handle('del', item.id)" href="javascript:;" class="dropdown-item">删除</a>
+                                        <a v-if="isLogin && delId == item.id" v-on:click="deleteComment(item.id)" href="javascript:;" class="dropdown-item text-danger">确定删除</a>
                                     </div>
                                 </div>
-
+                                <h5 class="m-0">{{item?.expand?.user?.nickname}}</h5>
+                                <p class="text-muted mb-0">
+                                    <small>
+                                        发布于
+                                        <i class="mdi mdi-circle-medium"></i>
+                                        {{nature(item.create_time)}}
+                                    </small>
+                                </p>
                             </div>
                         </div>
 
-                    </div>
+                        <hr class="m-0">
 
-                </div>
+                        <!-- 显示动态 - 开始 -->
+                        <div v-if="item.id != editId" v-highlight v-imagebox v-html="item.expand.html" class="text-dark my-3 html">
+                        </div>
+                        <!-- 显示动态 - 结束 -->
+
+                        <!-- 修改动态 - 开始 -->
+                        <div v-else class="card my-3">
+                            <div class="card-body first-comment-box">
+                                <comment-box :config="{ mode:'edit', id: item.id, content: item.content }"
+                                     v-on:finish="finish" v-on:cancel="cancel" btn="保存"
+                                     placeholder="说点什么吧 (支持Mackdown语法！) * ... ... ">
+                                </comment-box>
+                            </div>
+                        </div>
+                        <!-- 修改动态 - 结束 -->
+
+                        <hr class="m-0">
+
+                        <div class="my-1">
+                            <a v-on:click="like(item.id)" href="javascript:;" class="btn btn-sm btn-link text-muted ps-0">
+                                <i :class="'mdi mdi-heart me-1 ' + (likes.includes(item.id) ? 'text-danger' : '')"></i>
+                                <span>{{item?.opt?.like || 1}}</span>
+                            </a>
+                            <a v-on:click="openCommentBox(item)" href="javascript:;" class="btn btn-sm btn-link text-muted">
+                                <i class="uil uil-comments-alt me-1"></i>
+                                <span>{{item?.son?.length || 0}}</span>
+                            </a>
+                            <a v-on:click="next()" href="javascript:;" class="btn btn-sm btn-link text-muted">
+                                <i class="uil uil-share-alt me-1"></i>
+                                分享
+                            </a>
+                        </div>
+
+                        <div v-if="commentBox.id == item.id" class="card">
+                            <div class="card-body first-comment-box">
+                                <comment-box :config="{ type:'moving', opt: {like:0}, pid: item.id }"
+                                    :placeholder="'回复 @' + item?.expand?.user?.nickname || item?.nickname"
+                                    v-on:finish="finish" v-on:cancel="cancel">
+                                </comment-box>
+                            </div>
+                        </div>
+
+                        <hr v-if="!empty(item.son)" class="m-0">
+
+                        <div v-if="!empty(item.son)" class="mt-3">
+                            <div v-for="(son, index) in item.son" :key="index" class="d-flex my-2">
+                                <img :src="son?.expand?.head_img" class="me-2 rounded" height="32">
+                                <div>
+                                    <h5 class="m-0">{{son?.expand?.user?.nickname}}</h5>
+                                    <p class="text-muted mb-0">
+                                        <small>{{nature(son.create_time)}}</small>
+                                    </p>
+
+                                    <p v-html="son.expand.html" class="font-14 my-1 html"></p>
+
+                                    <div>
+                                        <a v-on:click="like(son.id)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0">
+                                            <i :class="'mdi mdi-heart me-1 ' + (likes.includes(son.id) ? 'text-danger' : '')"></i>
+                                            <span>{{son?.opt?.like || 0}}</span>
+                                        </a>
+                                        <a v-on:click="openCommentBox(son)" href="javascript:;" class="btn btn-sm btn-link text-muted p-0 ps-2">
+                                            <i class="uil uil-comments-alt me-1"></i>
+                                            <span>回复</span>
+                                        </a>
+                                    </div>
+
+                                    <div v-if="commentBox.id == son.id" class="card mt-2">
+                                        <div class="card-body first-comment-box">
+                                            <comment-box :config="{ type:'moving', opt: {like:0}, pid: son.id }"
+                                                 :placeholder="'回复 @' + son?.expand?.user?.nickname || son?.nickname"
+                                                 v-on:finish="finish" v-on:cancel="cancel">
+                                            </comment-box>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
             <div v-else class="card">

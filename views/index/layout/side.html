@@ -61,9 +61,10 @@
       </a>
       <div class="collapse" id="left-side-chic">
         <ul class="side-nav-second-level">
-          <li><a href="/dynamic.html">动态</a></li>
-          <li><a href="/search.html">搜索</a></li>
-          <li><a href="/chic/links.html">友链库</a></li>
+          <li v-if="isTrue(config.other.feature?.dynamic)"><a href="/dynamic.html">动态</a></li>
+          <li v-if="isTrue(config.other.feature?.search)"><a href="/search.html">搜索</a></li>
+          <li v-if="isTrue(config.other.feature?.links)"><a href="/chic/links.html">友链库</a></li>
+          <li v-if="isTrue(config.other.feature?.lovers)"><a href="/lovers.html">情侣空间</a></li>
         </ul>
       </div>
     </li>
@@ -96,7 +97,7 @@
       <div class="collapse" id="left-side-page">
         <ul class="side-nav-second-level">
           <li v-for="(item, index) in page.data.data" :key="index">
-            <a :href="'/page/' + item.alias + '.html'">
+            <a v-if="!exclude.includes(item.alias)" :href="'/page/' + item.alias + '.html'">
               {{item.title}}
             </a>
           </li>
@@ -122,8 +123,7 @@
       </div>
     </li>
   </ul>
-
-  <div v-if="config.other.help.is_show" class="help-box help-box-light text-center mt-2">
+  <div v-if="isTrue(config.other.help.is_show)" class="help-box help-box-light text-center mt-2">
     <a href="javascript:;" class="float-end close-btn text-body">
       <i class="mdi mdi-close"></i>
     </a>
