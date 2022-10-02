@@ -28,10 +28,7 @@
                 if (this.show.verify) {
                     if (inisHelper.is.empty(this.edit.email))       Notify('请输入邮箱', 'warning')
                     else if (!inisHelper.is.email(this.edit.email)) Notify('请输入正确的邮箱', 'warning')
-                    // else if (inisHelper.is.empty(this.edit.code))   Notify('请输入验证码','warning')
-                    else {
-                        this.save()
-                    }
+                    else his.save()
                 }
             },
             save(){
@@ -50,9 +47,9 @@
                     }
                 }
                 // 发送请求
-                Post('users', this.edit,{
+                Put('users/save', this.edit,{
                     headers: {
-                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                        Authorization: inisHelper.get.cookie('LOGIN-TOKEN')
                     }
                 }).then(res=>{
                     if (res.code == 201) {

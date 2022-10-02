@@ -422,7 +422,7 @@
                 if (this.isLogin()){
                     Post('users',{
                         mode: 'check',
-                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                        Authorization: inisHelper.get.cookie('LOGIN-TOKEN')
                     }).then(res=>{
                         if (res.code == 200) {
                             this.user.isLogin = true

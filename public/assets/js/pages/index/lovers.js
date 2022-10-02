@@ -142,7 +142,7 @@
             saveLovers(init = true, params = this.item){
                 Post('page', params,{
                     headers: {
-                        'login-token': this.userInfo.token
+                        Authorization: this.userInfo.token
                     }
                 }).then(res=>{
                     if (res.code == 200) {
@@ -163,7 +163,7 @@
                     content: result.content
                 },{
                     headers: {
-                        'login-token': this.userInfo.token
+                        Authorization: this.userInfo.token
                     }
                 }).then(res=>{
                     if (res.code == 200) {
@@ -231,7 +231,7 @@
                     mode: 'upload', file: e.target.files[0],
                 },{
                     headers: {
-                        'login-token' : this.userInfo.token,
+                        Authorization : this.userInfo.token,
                         "Content-Type": "multipart/form-data"
                     },
                 }).then(res=>{

@@ -73,7 +73,7 @@
                 const cache = inisHelper.stringfy({api:'article',limit:8,page})
                 const token = inisHelper.get.cookie('LOGIN-TOKEN')
                 let config  = {}
-                if (!this.empty(token)) config.headers = {'login-token': token}
+                if (!this.empty(token)) config.headers = {Authorization: token}
                 Get('article',{
                     limit: 8, page,
                 }, config).then(res=>{
@@ -96,7 +96,10 @@
             getPlacard(){
                 const cahce = inisHelper.stringfy({api:'placard/sql',whereOr:'type,=,web;type,=,all;'})
                 Get('placard/sql',{
-                    whereOr:'type,=,web;type,=,all;',
+                    whereOr: [
+                        ['type', '=', 'web'],
+                        ['type', '=', 'all'],
+                    ],
                 }).then(res=>{
                     if (res.code == 200 && res.data.count > 0) {
                         const result = res.data.data[0]

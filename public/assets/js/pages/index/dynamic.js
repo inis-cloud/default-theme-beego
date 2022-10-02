@@ -99,7 +99,9 @@
                 if (group.code == 200) this.count = group.data
 
                 const moving = await Get('comments/sql',{
-                    where: 'type=moving;', limit: 1
+                    where: [
+                        ['type','=','moving']
+                    ], limit: 1
                 })
 
                 if (moving.code == 200) this.count.moving = {
@@ -142,7 +144,7 @@
                     id, mode: 'remove'
                 },{
                     headers: this.userInfo.login ? {
-                        'login-token': this.userInfo.token
+                        Authorization: this.userInfo.token
                     } : {}
                 }).then(res=>{
                     if (res.code == 200) {

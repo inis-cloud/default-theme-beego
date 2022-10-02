@@ -16,6 +16,23 @@ const Post = (url = '', params = {}, config = {}) => {
     return inisHelper.fetch.post(INIS.api + url, params, config)
 }
 
+// 发起PUT请求
+const Put = (url = '', params = {}, config = {}) => {
+    // 定义 Token
+    const headers  = {token:INIS.token}
+    // 合并 headers 数据
+    config.headers = {...headers, ...config.headers}
+    return inisHelper.fetch.put(INIS.api + url, params, config)
+}
+
+// 发起DELETE请求
+const Del = (url = '', params = {}, config = {}) => {
+    // 定义 Token
+    const headers  = {token:INIS.token}
+    // 合并 headers 数据
+    config.headers = {...headers, ...config.headers}
+    return inisHelper.fetch.put(INIS.api + url, params, config)
+}
 // 通知模块
 const Notify = (content = '通知', type = 'info', config = {}) => {
     config = {...{title:null, position: 'top-right', color: 'rgba(0,0,0,0.2)'}, ...config}
@@ -277,7 +294,7 @@ const components = {
                     // 发送评论
                     Post('comments', this.comment,{
                         headers: this.userInfo.login ? {
-                            'login-token': this.userInfo.token
+                            Authorization: this.userInfo.token
                         } : {}
                     }).then(res=>{
                         if (res.code == 200) {

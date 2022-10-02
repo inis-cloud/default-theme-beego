@@ -98,15 +98,15 @@
             // 创建画布
             createCanvas(){
                 html2canvas(this.$refs.canvas).then(canvas => {
-                    // let aTag = document.createElement('a')
-                    // aTag.download = this.$refs.cover.title + '.png'
-                    // aTag.href     = canvas.toDataURL("image/png")
-                    // aTag.dataset.downloadurl = [aTag.download, aTag.href].join(':')
-                    // document.body.appendChild(aTag)
-                    // aTag.click()
-                    // document.body.removeChild(aTag)
-                    canvas.style.setProperty('object-fit','cover')
-                    document.querySelector('#poster-alert-modal .modal-content').appendChild(canvas)
+                    let aTag = document.createElement('a')
+                    aTag.download = this.$refs.cover.title + '.png'
+                    aTag.href     = canvas.toDataURL("image/png")
+                    aTag.dataset.downloadurl = [aTag.download, aTag.href].join(':')
+                    document.body.appendChild(aTag)
+                    aTag.click()
+                    document.body.removeChild(aTag)
+                    // canvas.style.setProperty('object-fit','cover')
+                    // document.querySelector('#poster-alert-modal .modal-content').appendChild(canvas)
                 });
             },
             // 判断字符串是否是base64图片

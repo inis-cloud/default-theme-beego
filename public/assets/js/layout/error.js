@@ -36,7 +36,7 @@
                 const cache = inisHelper.stringfy({api:'article', limit: 8, order: 'is_top desc, views desc'})
                 const token = inisHelper.get.cookie('LOGIN-TOKEN')
                 let config  = {}
-                if (!this.empty(token)) config.headers = {'login-token': token}
+                if (!this.empty(token)) config.headers = {Authorization: token}
                 Get('article',{
                     limit: 8,
                     order: 'is_top desc, views desc'

@@ -5,21 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8508fe3-1f6d-48b5-a90a-fcf2550aa269" name="变更" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index/route/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/index/route/app.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/conf/inis.ini" beforeDir="false" afterPath="$PROJECT_DIR$/conf/inis.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/css/inis.min.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/css/inis.min.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/assets/js/layout/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/layout/base.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/assets/js/layout/comm.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/layout/comm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/layout/error.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/layout/error.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/assets/js/pages/admin/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/admin/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/json/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/json/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/assets/libs/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/libs/helper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/admin/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/admin/layout/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/admin/pages/config.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/admin/pages/config.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index/layout/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index/layout/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index/layout/side.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index/layout/side.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index/pages/dynamic.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/index/pages/dynamic.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/admin/personal.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/admin/personal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/index/article.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/index/article.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/index/dynamic.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/index/dynamic.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/index/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/index/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/assets/js/pages/index/lovers.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/assets/js/pages/index/lovers.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,23 +46,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="go.format.on.save.advertiser.fired" value="true" />
-    <property name="go.formatter.settings.were.checked" value="true" />
-    <property name="go.import.settings.migrated" value="true" />
-    <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
-    <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "last_opened_file_path": "C:/Users/racns",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="default-theme-beego" />
@@ -104,6 +99,6 @@
     </option>
   </component>
   <component name="VgoProject">
-    <integration-enabled>true</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>

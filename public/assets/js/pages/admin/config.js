@@ -29,12 +29,12 @@
             // 初始化主题配置
             async initConfig(){
                 const defaultConfig = await inisHelper.fetch.get('/assets/json/config.json')
-                await Post('options',{
+                await Put('options/save',{
                     keys: 'config:default-theme-beego',
                     opt: defaultConfig
                 },{
                     headers: {
-                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                        Authorization: inisHelper.get.cookie('LOGIN-TOKEN')
                     },
                 }).then(res=>{
                     if (res.code == 200) {
@@ -48,12 +48,12 @@
             },
             // 保存主题配置
             saveConfig(){
-                Post('options',{
+                Post('options/save',{
                     keys: 'config:default-theme-beego',
                     opt: this.config
                 },{
                     headers: {
-                        'login-token': inisHelper.get.cookie('LOGIN-TOKEN')
+                        Authorization: inisHelper.get.cookie('LOGIN-TOKEN')
                     },
                 }).then(res=>{
                     if (res.code == 200) {
