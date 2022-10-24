@@ -292,7 +292,7 @@ const components = {
                     this.is.load = true
                     this.comment.content = inisHelper.html2md(this.vditor.getHTML())
                     // 发送评论
-                    Post('comments', this.comment,{
+                    Post('comments/add', this.comment,{
                         headers: this.userInfo.login ? {
                             Authorization: this.userInfo.token
                         } : {}

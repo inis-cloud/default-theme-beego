@@ -140,9 +140,7 @@
             },
             // 删除评论
             deleteComment(id){
-                Post('comments', {
-                    id, mode: 'remove'
-                },{
+                Del('comments/remove', { id },{
                     headers: this.userInfo.login ? {
                         Authorization: this.userInfo.token
                     } : {}
