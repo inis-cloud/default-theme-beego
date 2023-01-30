@@ -24,7 +24,7 @@
                 <div id="banner" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-indicators z-index-99 mb-0">
                         [[range $index, $item := .banner.Data.data]]
-                        <button type="qbutton" data-bs-target="#banner" data-bs-slide-to="[[$index]]" class="[[if eq $index 0]]active[[end]]" aria-current="[[if eq $index 0]]true[[end]]"></button>
+                        <button type="button" data-bs-target="#banner" data-bs-slide-to="[[$index]]" class="[[if eq $index 0]]active[[end]]" aria-current="[[if eq $index 0]]true[[end]]"></button>
                         [[end]]
                     </div>
                     <div class="carousel-inner">
